@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang='zh-TW'>
+<head>
+	<title>PHOTOx1 UI Design</title>
+	<link href='css/han.min.css' rel='stylesheet'/>
+	<link href='css/layout.css' rel='stylesheet'/>
+</head>
+<body>
+<div id="paddingSpace"></div>
+
+<div id="pageMain">
+	<header>
+		<div class="center">
+			<h1>一些標題</h1>
+			<p>一些描述</p>
+		</div>
+	</header>
+	<div id="mainStream" class="mainPage center">
+		<div class="stream">
+			<figure class="frame">
+				<a class="photo" href="objectPage.html">
+					<img src="data/nelson0719_001.JPG" alt="thumbnail" />
+					<!-- <div class="loading"><div class="vamWrapper"><span class="vam">loading...</span></div></div> -->
+				</a>
+				<figcaption class="title">是結束，也是開始。</figcaption>
+				<div class="actions">
+					<img class="column fbAction" src="icon/fbIcon.jpg" alt="imgbutton"/>
+				</div>
+			</figure>
+			<figure class="frame">
+				<a class="photo" href="objectPage.html">
+					<img src="data/nelson0719_011.JPG" alt="thumbnail" />
+					<!-- <div class="loading"><div class="vamWrapper"><span class="vam">loading...</span></div></div> -->
+				</a>
+				<figcaption class="title">是結束，也是開始。</figcaption>
+				<div class="actions">
+					<img class="column fbAction" src="icon/fbIcon.jpg" alt="imgbutton"/>
+				</div>
+			</figure>
+		</div>
+		<div class="stream right">
+			<figure class="frame">
+				<a class="photo" href="objectPage.html">
+					<img src="data/nelson0719_007.JPG" alt="thumbnail" />
+					<!-- <div class="loading"><div class="vamWrapper"><span class="vam">loading...</span></div></div> -->
+				</a>
+				<figcaption class="title">是結束，也是開始。</figcaption>
+				<div class="actions">
+					<img class="column fbAction" src="icon/fbIcon.jpg" alt="imgbutton"/>
+				</div>
+			</figure>
+		</div>
+		<div class="stream">
+			<figure class="frame">
+				<a class="photo" href="objectPage.html">
+					<img src="data/nelson0719_008.JPG" alt="thumbnail" />
+					<!-- <div class="loading"><div class="vamWrapper"><span class="vam">loading...</span></div></div> -->
+				</a>
+				<figcaption class="title">是結束，也是開始。</figcaption>
+				<div class="actions">
+					<img class="column fbAction" src="icon/fbIcon.jpg" alt="imgbutton"/>
+				</div>
+			</figure>
+		</div>
+		<div class="stream right">
+			<figure class="frame">
+				<a class="photo" href="objectPage.html">
+					<img src="data/nelson0719_013.JPG" alt="thumbnail" />
+					<!-- <div class="loading"><div class="vamWrapper"><span class="vam">loading...</span></div></div> -->
+				</a>
+				<figcaption class="title">是結束，也是開始。</figcaption>
+				<div class="actions">
+					<img class="column fbAction" src="icon/fbIcon.jpg" alt="imgbutton"/>
+				</div>
+			</figure>
+			<figure class="frame">
+				<a class="photo" href="objectPage.html">
+					<img src="data/nelson0719_006.JPG" alt="thumbnail" />
+					<!-- <div class="loading"><div class="vamWrapper"><span class="vam">loading...</span></div></div> -->
+				</a>
+				<figcaption class="title">是結束，也是開始。</figcaption>
+				<div class="actions">
+					<img class="column fbAction" src="icon/fbIcon.jpg" alt="imgbutton"/>
+				</div>
+			</figure>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="footer  endOfPage">
+		<hr>
+		<div class="endOfPage">
+			END OF PAGE
+		</div>
+	</div>
+</footer>
+<div class="debug">
+	<input type="button" onclick="$('.debug').toggle()" value="hide"/>
+	debug area
+	<button onclick="$('#header img').toggle()">banner toggle</button>
+
+</div>
+<div id="topBar">
+	<div class="container">
+		<div id="" class="left">
+			<button id="categoryButton" class="button"> 
+				選單
+			</button>
+			<input id="search" class="column inputText button" type="text" value="search" />
+		</div>
+		<div id="acount" class="">
+			<div id="avatarPhotoWrapper" class="column">
+				<!-- <img id="avatarPhoto" src="favicon.gif" alt="avatarPhoto" /> -->
+			</div>
+			<a href="" id="acountName" class="column button">Maria S.</a>
+		</div>
+		<div class="right">
+			<!-- <button id="" class="button">範例按鈕</button> -->
+			<button id="setting" class="button" href="contact.html">
+				設定
+			</button>
+		</div>
+		<h1 id="siteTitleWrapper" >
+			<a class="header column" id="siteTitle" href="/" title="PHOTOX1">PHOTOx1</a>
+		</h1>
+	</div>
+</div>
+<div id="panel" class="slideDown">
+	<div class="">
+		<div class="background left">
+			<div class="">
+				<h2>展覽</h2>
+				<h3>攝影</h3>
+				<ul>
+					<li><a href="user/kinghand.wang/">賞喵悅目 - 小賢豆豆媽</a></li>
+					<li><a href="user/nelson0719/">那一年 我到過的尼泊爾 - Nelson Wong</a></li>
+					<li><a href="user/eric.cc.hsu/">陽明山秘境 - Eric the Traveler</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="settingSlidedown" class="slideDown">
+	<ol class="background right">
+		<li><a href="mailto:PHOTOx1@voo.com.tw">報名展出 </a>
+		<li><a href="mailto:PHOTOx1@voo.com.tw">聯絡我們</a>
+		<li><a href="http://www.facebook.com/PHOTOx1">關於我們</a>
+	</ol>
+</div>
+</div>
+<script src="script/jquery-1.10.1.min.js"></script>
+<script type="text/javascript" src="script/jquery.endless-scroll.js"></script>
+<script src="script/Utility.js"></script>
+<script src="script/UI.js" ></script>
+</body>
+</html>

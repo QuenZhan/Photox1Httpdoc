@@ -12,12 +12,13 @@ function curPageURL(){
 	}
 	return $pageURL;
 }
-$root="http://localhost/photox1/";
+$root="http://photox1.com/";
 $title="PHOTOx1 攝影展覽";
 $imgBanner="";
 $hrefBanner="";
 $description="這是一個「攝影展覧」網站";
-$uid="kinghand.wang"; // 預設的uid，影響 mainPage 顯示的內容
+//$uid="kinghand.wang"; // 預設的uid，影響 mainPage 顯示的內容
+$uid="nelson0719"; // 預設的uid，影響 mainPage 顯示的內容
 $explode=explode("/",$_SERVER["REQUEST_URI"]);
 $page=$explode[1];
 $object=null;
@@ -41,17 +42,17 @@ if(array_key_exists("uid",$_GET))$uid=$_GET["uid"];
 switch($uid){
 case"eric.cc.hsu":
 	$description="陽明山秘境 - Eric the Traveler";
-	$imgBanner="content/bannerFrame.jpg";
+	$imgBanner=$root."content/bannerFrame.jpg";
 	$hrefBanner="user/eric.cc.hsu/";
 	break;
 case"nelson0719":
 	$description="那一年 我到過的尼泊爾 - Nelson Wong";
-	$imgBanner="content/nelson.jpg";
+	$imgBanner=$root."content/nelson.jpg";
 	$hrefBanner="http://www.facebook.com/nelson0719";
 	break;
 case"kinghand.wang":
 	$description="賞喵悅目 小賢豆豆媽";
-	$imgBanner="content/bannerFrameKinghand.jpg";
+	$imgBanner=$root."content/bannerFrameKinghand.jpg";
 	$hrefBanner="https://www.facebook.com/kinghand.wang";
 	break;
 }

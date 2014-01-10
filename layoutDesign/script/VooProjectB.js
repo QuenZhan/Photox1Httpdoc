@@ -267,14 +267,6 @@ var VooProjectB={first:false
 			this.streams.push($("<div class='stream'></div>").appendTo($(".framesContainer")));
 		}
 	}
-	,streamClear:function(){
-		var ddd=this.streams[0].heigth()-this.streams[1].heigth()
-		if(Math.abs(ddd)>50)return;
-		this.streams=[];
-		for(var i=0;i<2;i++){
-			this.streams.push($("<div class='stream'></div>").appendTo($(".framesContainer")));
-		}
-	}
 	,loadNext07:function loadNext07(){
 		for(var i=0;i<this.imgFileNames.length;i++){
 			var imgUrl="photoBatchOutput/400/"+this.imgFileNames[i]
