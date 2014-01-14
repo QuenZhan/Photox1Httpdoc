@@ -233,6 +233,77 @@ $database='
 $json=json_decode($database);
 $api="";
 $oid="";
+$user='
+{
+	"uid":"kinghand.wang"
+	,"photoUrl":"https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg"
+	,"website":"http://www.facebook.com/kinghand.wang"
+	,"firstName":"kinghand"
+	,"lastName":"wang"
+}
+';
+$object='{
+	"oid":"abc"
+	,"type":0
+	,"categoryId":0
+	,"status":0
+	,"status":0
+	,"scores":[0,1,2,3,4]
+	,"title":"標題"
+	,"description":"description description description"
+	,"photoCuration":{
+			"url":"http://photox1.com/user/kinghand.wang/photo/400/kinghand.wang_001.JPG"
+			,"width":400
+			,"height":270
+			,"size":800
+		}
+	,"photoObject":{
+			"url":"http://photox1.com/user/kinghand.wang/photo/800/kinghand.wang_001.JPG"
+			,"width":800
+			,"height":540
+			,"size":800
+		}
+	,"photoCategory":{
+			"url":"http://photox1.com/user/kinghand.wang/photo/400/kinghand.wang_001.JPG"
+			,"width":300
+			,"height":202
+			,"size":800
+		}
+	,"hyperllink":"http://www.facebook.com/kinghand.wang"
+	,"user":'.$user.'
+}
+';
+http://i.imgur.com/hqEecuW.png
+$object00='{
+	"oid":"abc"
+	,"type":0
+	,"categoryId":0
+	,"status":0
+	,"status":0
+	,"scores":[0,1,2,3,4]
+	,"title":"標題"
+	,"description":"description description description"
+	,"photoCuration":{
+			"url":"http://i.imgur.com/hqEecuW.png"
+			,"width":400
+			,"height":638
+			,"size":800
+		}
+	,"photoObject":{
+			"url":"http://i.imgur.com/hqEecuW.png"
+			,"width":800
+			,"height":540
+			,"size":800
+		}
+	,"photoCategory":{
+			"url":"http://i.imgur.com/hqEecuW.png"
+			,"width":300
+			,"height":479
+			,"size":800
+		}
+	,"hyperllink":"http://www.facebook.com/kinghand.wang"
+	,"user":'.$user.'
+}';
 if(array_key_exists("api",$_GET))$api=$_GET["api"];
 switch($api){
 case"getSingleObject":
@@ -240,23 +311,35 @@ case"getSingleObject":
 	if(array_key_exists("oid",$_GET))$oid=$_GET["oid"];
 	foreach($json as &$value){
 		if($value->{'oid'}!=$oid)continue;
-		echo '{"eroor":0
-			,"targetObject":'.json_encode($value).'
-			,"adObjects":null
-			}';
 		break;
 	}
+	echo '{"eroor":0
+		,"targetObject":'.$object.'
+		,"adObjects":null
+		}';
 	break;
 case"getObjects":
 	$page=0;	if(array_key_exists("page",$_POST))$page=$_POST["page"];
-
 	echo '{"eroor":0
 			,"total":1
 			,"page":'.$page.'
-			}';
+			,"objests":[
+				'.$object.'
+				,'.$object00.'
+				,'.$object00.'
+				,'.$object.'
+				,'.$object.'
+				,'.$object00.'
+				,'.$object.'
+				,'.$object00.'
+				,'.$object.'
+				,'.$object00.'
+			]
+			,"end":"end"
+		}';
 	break;
 default:
-	echo "bah";
+	echo '{"bah":"bah"}';
 	break;
 }
 ?>

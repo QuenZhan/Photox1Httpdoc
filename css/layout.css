@@ -52,6 +52,10 @@ font-size:16px;
 padding:2px;
 vertical-align:top;
 }
+#panel .column{
+width:300px;
+padding:0;
+}
 #topBar .button{
 display:inline-block;
 background:transparent;
@@ -194,8 +198,8 @@ color:#ddd;
 position:relative;
 }
 #avatarPhotoWrapper,.avatarPhotoWrapper{
-height:20px;
-width:20px;
+height:50px;
+width:50px;
 overflow:hidden;
 display:inline-block;
 }
@@ -216,14 +220,23 @@ float:none;
 }
 .frame{
 display:block;
-/* box-shadow:0 0 6px rgba(0,0,0,0.3); */
 border:0px solid #fff;
 border-bottom:1px solid #fff;
 border-radius:7px;
 background:#fff;
-width:210px;
+width:400px;
 margin:10px 0;
 color:#555;
+}
+.frame .description{
+text-align:right;
+float:right;
+}
+.frame .userInfo{
+display:none
+}
+.object .userInfo, .category .userInfo{
+display:inline-block;
 }
 .frame .footer .info{
 display:none;
@@ -242,21 +255,16 @@ line-height:20px;
 vertical-align:bottom;
 display:inline-block;
 }
-.mainPage .frame .title{
-max-width:280px;
+.frame .title{
 height:20px;
 overflow:hidden;
-}
-.frame .title{
-/* float:right; */
 font-size:16px;
 font-weight:bold;
-margin:0 2px;
+margin:2px 0;
 }
-.mainPage .frame{
-width:400px;
+.category .frame{
+width:300px;
 }
-
 .action{
 display:inline-block;
 text-align:center;
@@ -284,7 +292,6 @@ display:block;
 background:#fff;
 text-align:center;
 overflow:hidden;
-height:157px;
 position:relative;
 }
 .photo img{
@@ -327,10 +334,7 @@ max-width:100%;
 max-width:none;
 max-height:100%;
 }
-.mainPage .photo{
-height:357px;
-}
-.mainPage .photo .loading{
+.photo .loading{
 display:block;
 line-height:355px;
 border:1px solid #000;
@@ -345,7 +349,6 @@ display:inline-block;
 display:block;
 padding:0;
 margin:0;
-margin-bottom:10px;
 vertical-align:top;
 }
 .relative{
@@ -429,31 +432,13 @@ display:table;
 .show{
 display:block;
 }
-/* debug */
- .photo .loading{
-/* display:none; */
-}
-.frame .title{
-/* display:none; */
-}
 .debug{
 display:none;
 position:fixed;
 bottom:100px;
 }
-/* full image */
-.mainPage .frame .photo,.photo{
-height:auto;
-}
-.mainPage .photo{
-height:auto;
-}
-.mainPage .photo .loading{
+.loading{
 display:block;
 line-height:auto;
 border:0;
-}
-/* 0.7 disable */
-#acount,#topBar #search,#score{
-display:none;
 }

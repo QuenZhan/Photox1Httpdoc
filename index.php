@@ -25,8 +25,8 @@ function jsonError(){
     }
 }
 function be($apiName,$parameter){
-	global $root;
-	$ch = curl_init($root."dummyBackend.php?api=".$apiName);
+	global $beApiRoot;
+	$ch = curl_init($beApiRoot.$apiName);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameter));
@@ -51,15 +51,18 @@ if(($_SERVER["SERVER_NAME"]=="localhost")){
 	$title="local:".$title;
 }
 else $root="http://photox1.com/";
+$beApiRoot='http://test.talkin.cc/voo/api/';
+$beApiRoot=$root."dummyBackend.php?api=";
 $imgBanner="";
 $hrefBanner="";
+$hyperllink="";
 $description="這是一個「攝影展覧」網站";
 $uid="kinghand.wang"; // 預設的uid，影響 mainPage 顯示的內容
 $explode=explode("/",$_SERVER["REQUEST_URI"]);
-$page=$explode[1];
+$page=$explode[1];		if(array_key_exists("page",$_GET))$page=$_GET["page"];
 $object=array();
 $oid="";
-if(array_key_exists("page",$_GET))$page=$_GET["page"];
+$category="";			if(array_key_exists("category",$_GET))$category=$_GET["category"];
 switch($page){
 case"object":
 	$oid=$explode[2];
@@ -70,31 +73,27 @@ case"object":
 	$object=$result->{'targetObject'};
 	$title=$object->{'title'};
 	$description=$object->{'description'};
-	$imgBanner=$root."user/".$object->{'uid'}."/photo/800/".$object->{'filename'};
+	$hyperllink=$object->{'hyperllink'};
+	$imgBanner=$object->{'photoObject'}->{"url"};
 	$oid=$object->{'oid'};
-	$uid=$object->{'uid'};
+	$uid=$object->{'user'}->{"uid"};
 	break;
 case"user":
 	$uid=$explode[2];
+case"category":
+	$title=$category;
+	$result=be("getSingleObject",array("oid"=>0));
+	$object=$result->{'targetObject'};
+	$description=$object->{'description'};
+	$result=be("getObjects",array("categoies"=>array($category)));
+	break;
 default:
-	if(array_key_exists("uid",$_GET))$uid=$_GET["uid"];
-	switch($uid){
-	case"eric.cc.hsu":
-		$description="陽明山秘境 - Eric the Traveler";
-		$imgBanner=$root."content/bannerFrame.jpg";
-		$hrefBanner="user/eric.cc.hsu/";
-		break;
-	case"nelson0719":
-		$description="那一年 我到過的尼泊爾 - Nelson Wong";
-		$imgBanner=$root."content/nelson.jpg";
-		$hrefBanner="http://www.facebook.com/nelson0719";
-		break;
-	case"kinghand.wang":
-		$description="賞喵悅目 小賢豆豆媽";
-		$imgBanner=$root."content/bannerFrameKinghand.jpg";
-		$hrefBanner="https://www.facebook.com/kinghand.wang";
-		break;
-	}
+	$result=be("getSingleObject",array("oid"=>0));
+	$object=$result->{'targetObject'};
+	$imgBanner=$object->{'photoCuration'}->{"url"};
+	$hrefBanner=$object->{'hyperllink'};
+	$description=$object->{'description'};
+	$result=be("getObjects",array("categoies"=>array($category)));
 	break;
 }
 ?>
@@ -118,6 +117,9 @@ default:
 	<meta property="og:image" content="<?php echo $imgBanner ?>" />
 	<meta property="og:description" content="<?php echo $description ?>" />
 	<meta property="og:site_name" content="PHOTOx1" />
+	<style>
+		// #topBar{display:none;}
+	</style>
 </head>
 <body>
 <!-- ======================================================================== start of plugins -->
@@ -153,7 +155,7 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 <div id="pageObject">
 	<article>
 		<div class="center frame object">
-			<a class="photo">
+			<a class="photo" href="<?php echo $hyperllink ?>">
 				<img src="<?php echo $imgBanner ?>" alt="<?php echo $title ?>" />
 				<div class="loading">
 					<div class="vamWrapper">
@@ -166,7 +168,16 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 				<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
 			</div>
 			<div>
-				<span class="description"><?php echo $description ?></span>
+				<div class="userInfo column">
+					<div class="avatarPhotoWrapper column">
+						<img src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg " alt="userPhoto" />
+					</div>
+					<span class="firstName"><?php echo $object->{"user"}->{"firstName"} ?></span>
+					<span class="lastName"><?php echo $object->{"user"}->{"lastName"} ?></span>
+				</div>
+				<div class="column description">
+					<span class=""><?php echo $description ?></span>
+				</div>
 			</div>
 		</div>
 	</article>
@@ -177,52 +188,51 @@ switch($page):
 case"object":break;
 default:
 ?>
-<div id="pageMain">
+<div id="pageMain" class="<?php echo $page ?>">
 	<div id="header">
 		<header class="center relative">
+<?php if($imgBanner!=""):?>
 			<a id="banner" class="" title="<?php echo $description?>" href="<?php echo $hrefBanner?>">
 				<img class="" alt="banner" src ="<?php echo $imgBanner?>" />
 			</a>
+<?php else:?>
+			<h1 title="<?php echo $description?>"><?php echo $title ?></h1>
+<?php endif;?>
 			<div id="sales" >
 				<a id="buynow" href="/" style="display:none"><img src="icon/iconBuyNow.png" alt="buynow" /></a>
 				<a id="applaynow" href="mailto:PHOTOx1@voo.com.tw"><img src="icon/iconApplyNow.png" alt="applaynow" /></a>
 			</div>
 		</header>
 	</div>
-	<div id="mainSection" class="pushDown">
-		<div class="framesContainer center mainPage">
-			<div class="stream">
-				<div id="frame" class="frame">
-					<hr />
-					<a class="photo" href="objectPage.html">
-						<div class="rectify ">
-							<img src="" alt="thumbnail" />
-						</div>
-						<div class="loading">
-							<div class="vamWrapper">
-								<span class="vam">loading...</span>
-							</div>
-						</div>
-					</a>
-					<h2 class="title">陽明山秘境</h2>
-					<div class="footer">
-						<menu class="actions">
-							<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
-							<!-- <img class="column fbAction" src="icon/fbIcon.jpg" alt="imgbutton"/> -->
-							<!-- <img class="column" src="icon/fbShareicon.jpg" alt="imgbutton"/> -->
-							<!-- <div class="fb-like column" data-href="http://photox1.com/user/eric.cc.hsu/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div> -->
-							
-						</menu>
-						<div class="info">
-							<div class="avatarPhotoWrapper">
-								<img src="favicon.gif" alt="thumbnail" />
-							</div>
-							<div id="score" class="score column">★★★★☆</div>
-							<div class="views column">12345</div>
-							<span class="column">views</span>
+	<div id="mainSection" class="pushDown framesContainer center">
+		<div class="stream">
+			<div id="frame" class="frame">
+				<a class="photo" href="objectPage.html">
+					<div class="rectify ">
+						<img src="" alt="thumbnail" />
+					</div>
+					<div class="loading">
+						<div class="vamWrapper">
+							<span class="vam">loading...</span>
 						</div>
 					</div>
+				</a>
+				<h2 class="title">陽明山秘境</h2>
+				<menu class="actions">
+					<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
+					<!-- <img class="column fbAction" src="icon/fbIcon.jpg" alt="imgbutton"/> -->
+					<!-- <img class="column" src="icon/fbShareicon.jpg" alt="imgbutton"/> -->
+					<!-- <div class="fb-like column" data-href="http://photox1.com/user/eric.cc.hsu/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div> -->
+					
+				</menu>
+				<div class="userInfo">
+					<div class="avatarPhotoWrapper column">
+						<img src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg " alt="userPhoto" />
+					</div>
+					<span class="firstName">firstName</span>
+					<span class="lastName">lastName</span>
 				</div>
+				<hr />
 			</div>
 		</div>
 	</div>
@@ -248,43 +258,38 @@ default:
 			<button id="categoryButton" class="button"> 
 				選單
 			</button>
-			<input id="search" class="column inputText button" type="text" value="search" />
-		</div>
-		<div id="acount" class="">
-			<div id="avatarPhotoWrapper" class="column">
-				<!-- <img id="avatarPhoto" src="favicon.gif" alt="avatarPhoto" /> -->
-			</div>
-			<a href="" id="acountName" class="column button">Maria S.</a>
 		</div>
 		<div class="right">
-			<!-- <button id="" class="button">範例按鈕</button> -->
 			<button id="setting" class="button" href="contact.html">
 				設定
 			</button>
 		</div>
-		<h1 id="siteTitleWrapper" ><a class="header column" id="siteTitle" href="/" title="PHOTOX1"></a></h1>
+		<h1 id="siteTitleWrapper" >
+			<a class="header column" id="siteTitle" href="<?php echo $root ?>" title="PHOTOX1"></a>
+		</h1>
 	</div>
 </div>
 <div id="panel" class="slideDown">
-	<div class="">
-		<div class="background left">
-			<div class="">
-				<h2>展覽</h2>
-				<h3>攝影</h3>
-				<ul>
-					<li><a href="user/kinghand.wang/">賞喵悅目 - 小賢豆豆媽</a></li>
-					<li><a href="user/nelson0719/">那一年 我到過的尼泊爾 - Nelson Wong</a></li>
-					<li><a href="user/eric.cc.hsu/">陽明山秘境 - Eric the Traveler</a></li>
-				</ul>
-			</div>
-		</div>
+	<div class="background left">
+		<ul class="column">
+			<li><a href="user/kinghand.wang/">賞喵悅目 - 小賢豆豆媽</a></li>
+			<li><a href="user/nelson0719/">那一年 我到過的尼泊爾 - Nelson Wong</a></li>
+			<li><a href="user/eric.cc.hsu/">陽明山秘境 - Eric the Traveler</a></li>
+		</ul>
+		<ul class="column">
+			<li><a href="?page=category&category=類別">類別bla</a>
+			<li>類別
+			<li>類別
+		</ul>
 	</div>
 </div>
 <div id="settingSlidedown" class="slideDown">
 	<ol class="background right">
+		<li><a >登入</a>
 		<li><a href="mailto:PHOTOx1@voo.com.tw">報名展出 </a>
 		<li><a href="mailto:PHOTOx1@voo.com.tw">聯絡我們</a>
 		<li><a href="http://www.facebook.com/PHOTOx1">關於我們</a>
+		<li><a >隱私權政策</a>
 	</ol>
 </div>
 <script src="script/jquery-1.10.1.min.js"></script>
@@ -292,11 +297,23 @@ default:
 <script src="script/Utility.js"></script>
 <script src="script/InfinityScroll.js"></script>
 <script src="script/VooProjectB.js"></script>
+<script src="script/UI.js"></script>
 <script>
+VooProjectB.beApiRoot="<?php echo $beApiRoot ?>";
 VooProjectB.oid="<?php echo $oid ?>";
 VooProjectB.uid="<?php echo $uid ?>";
 VooProjectB.page="<?php echo $page ?>";
-VooProjectB.start();
+<?php 
+switch($page):
+case"object":?>
+VooProjectB.objectPage();
+<?php
+	break;
+default:?>
+VooProjectB.mainPage();
+<?php
+endswitch;
+?>
 </script>
 </body>
 </html>

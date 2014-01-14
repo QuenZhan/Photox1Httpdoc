@@ -2,13 +2,12 @@ var InfinityScroll={first:false
 	,onEnter:function(direction){
 		alert("onEnter "+direction);
 	}
-	,padding:20
+	,padding:100
 	,sur:""
 	,onScroll:function(){
 		var scrollPosition
 			,pageHeight = $(window).height()
 			,contentHeight= $(document).height()
-			,padding=20;
 			;
 		if(navigator.appName == "Microsoft Internet Explorer")scrollPosition = document.documentElement.scrollTop;  
 		else scrollPosition = window.pageYOffset;
@@ -28,8 +27,11 @@ var InfinityScroll={first:false
 			if(contentHeight-scrollPosition-pageHeight<this.padding){
 				this.sur="enter";
 				setTimeout( function(){InfinityScroll.sur="";},500);
-				this.onEnter("prev");
+				this.onEnter("next");
 			}
 		}
 	}
 }
+$(window).scroll(function() {
+	InfinityScroll.onScroll();
+});
