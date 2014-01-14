@@ -9,7 +9,7 @@
 類別 		| 網站服務
 版本 		| 0.8
 伺服器 		| AWS
-BE負責人	| Talkkin
+BE負責人	| Talkin
 FE負責人	| JimZheng
 更新時間	| 2014-01-14
 
