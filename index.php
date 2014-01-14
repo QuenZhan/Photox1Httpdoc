@@ -1,25 +1,42 @@
 ﻿<?php
-
-//firephp ini
-// require_once('FirePHPCore/FirePHP.class.php');
-// ob_start();
-// $firephp = FirePHP::getInstance(true);
-//my staff
+function jsonError(){
+	switch (json_last_error()){
+        case JSON_ERROR_NONE:
+            echo ' - No errors';
+        break;
+        case JSON_ERROR_DEPTH:
+            echo ' - Maximum stack depth exceeded';
+        break;
+        case JSON_ERROR_STATE_MISMATCH:
+            echo ' - Underflow or the modes mismatch';
+        break;
+        case JSON_ERROR_CTRL_CHAR:
+            echo ' - Unexpected control character found';
+        break;
+        case JSON_ERROR_SYNTAX:
+            echo ' - Syntax error, malformed JSON';
+        break;
+        case JSON_ERROR_UTF8:
+            echo ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+        break;
+        default:
+            echo ' - Unknown error';
+        break;
+    }
+}
 function be($apiName,$parameter){
-	//curl;
-	// global $root;
-	// $ch = curl_init();
-	// curl_setopt($ch, CURLOPT_URL,$root."dummyBackend.php?name=".$apiName);
-	// curl_setopt($ch, CURLOPT_POST, true); // 啟用POST
-	// curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameter)); 
-	// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
-	// $output=curl_exec($ch);
-	// $result=json_decode($output);
-	// return $result;
+	global $root;
+	$ch = curl_init($root."dummyBackend.php?api=".$apiName);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameter));
+	$result=curl_exec($ch);
+	curl_close($ch);
+	return json_decode($result);
+	// return ($result);
 }
 function curPageURL(){
 	$pageURL = 'http';
-	// if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
 	$pageURL .= "://";
 	if ($_SERVER["SERVER_PORT"] != "80") {
 		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
@@ -28,56 +45,64 @@ function curPageURL(){
 	}
 	return $pageURL;
 }
-$root="http://localhost/photox1/";
 $title="PHOTOx1 攝影展覽";
+if(($_SERVER["SERVER_NAME"]=="localhost")){
+	$root="http://localhost/photox1/";
+	$title="local:".$title;
+}
+else $root="http://photox1.com/";
 $imgBanner="";
 $hrefBanner="";
 $description="這是一個「攝影展覧」網站";
-$uid="nelson0719"; // 預設的uid，影響 mainPage 顯示的內容
+$uid="kinghand.wang"; // 預設的uid，影響 mainPage 顯示的內容
 $explode=explode("/",$_SERVER["REQUEST_URI"]);
 $page=$explode[1];
-$object=null;
+$object=array();
 $oid="";
 if(array_key_exists("page",$_GET))$page=$_GET["page"];
 switch($page){
 case"object":
 	$oid=$explode[2];
 	if(array_key_exists("oid",$_GET))$oid=$_GET["oid"];
-	break;
-	$json=be("getSingleObject",array("oid"=>$oid,"count"=>true));
-	$object=$json;
-	$title=$object["title"];
-	$description=$object["description"];
+	$result=be("getSingleObject",array("oid"=>$oid,"count"=>true));
+	// var_dump ($result);
+	// jsonError();
+	$object=$result->{'targetObject'};
+	$title=$object->{'title'};
+	$description=$object->{'description'};
+	$imgBanner=$root."user/".$object->{'uid'}."/photo/800/".$object->{'filename'};
+	$oid=$object->{'oid'};
+	$uid=$object->{'uid'};
 	break;
 case"user":
 	$uid=$explode[2];
+default:
+	if(array_key_exists("uid",$_GET))$uid=$_GET["uid"];
+	switch($uid){
+	case"eric.cc.hsu":
+		$description="陽明山秘境 - Eric the Traveler";
+		$imgBanner=$root."content/bannerFrame.jpg";
+		$hrefBanner="user/eric.cc.hsu/";
+		break;
+	case"nelson0719":
+		$description="那一年 我到過的尼泊爾 - Nelson Wong";
+		$imgBanner=$root."content/nelson.jpg";
+		$hrefBanner="http://www.facebook.com/nelson0719";
+		break;
+	case"kinghand.wang":
+		$description="賞喵悅目 小賢豆豆媽";
+		$imgBanner=$root."content/bannerFrameKinghand.jpg";
+		$hrefBanner="https://www.facebook.com/kinghand.wang";
+		break;
+	}
 	break;
 }
-if(array_key_exists("uid",$_GET))$uid=$_GET["uid"];
-switch($uid){
-case"eric.cc.hsu":
-	$description="陽明山秘境 - Eric the Traveler";
-	$imgBanner="content/bannerFrame.jpg";
-	$hrefBanner="user/eric.cc.hsu/";
-	break;
-case"nelson0719":
-	$description="那一年 我到過的尼泊爾 - Nelson Wong";
-	$imgBanner="content/nelson.jpg";
-	$hrefBanner="http://www.facebook.com/nelson0719";
-	break;
-case"kinghand.wang":
-	$description="賞喵悅目 小賢豆豆媽";
-	$imgBanner="content/bannerFrameKinghand.jpg";
-	$hrefBanner="https://www.facebook.com/kinghand.wang";
-	break;
-}
-// $firephp->log($page);
 ?>
 <!DOCTYPE html>
 <html lang='zh-TW'>
 <head>
-	<base href="http://photox1.com/" /> 
-	<!-- <base href="http://localhost/photox1/" /> -->
+	<!-- <base href="http://photox1.com/" />  -->
+	<base href="<?php echo $root ?>" />
 	<title><?php echo $title ?></title>
 	<!-- IRMsQ8KTqnGZthsWBda2YjDXTdU --> 
 	<!-- Alexa for PHOTOx1.com -->
@@ -95,6 +120,7 @@ case"kinghand.wang":
 	<meta property="og:site_name" content="PHOTOx1" />
 </head>
 <body>
+<!-- ======================================================================== start of plugins -->
 <!-- facebook plugin  -->
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
@@ -104,6 +130,23 @@ case"kinghand.wang":
   js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
+<!-- Start Alexa Certify Javascript -->
+<script type="text/javascript">
+_atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
+(function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
+</script>
+<noscript><img src="" style="display:none" height="1" width="1" alt="" /></noscript>
+ <!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46646053-1', 'photox1.com');
+  ga('send', 'pageview');
+
+</script>
 <!-- ======================================================================== end of plugins -->
 <div id="paddingSpace"></div>
 <?php if($page=="object"): ?>
@@ -111,19 +154,19 @@ case"kinghand.wang":
 	<article>
 		<div class="center frame object">
 			<a class="photo">
-				<img src="content/nelson.jpg" alt="objectPhoto" />
+				<img src="<?php echo $imgBanner ?>" alt="<?php echo $title ?>" />
 				<div class="loading">
 					<div class="vamWrapper">
 						<span class="vam">loading...</span>
 					</div>
 				</div>
 			</a>
-			<h1 class="title">陽明山秘境</h1>
+			<h1 class="title"><?php echo $title ?></h1>
 			<div class="actions">
 				<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
 			</div>
 			<div>
-				<span class="description">Eric the Traveler 攝影展 - 陽明山秘境</span>
+				<span class="description"><?php echo $description ?></span>
 			</div>
 		</div>
 	</article>
@@ -140,8 +183,8 @@ default:
 			<a id="banner" class="" title="<?php echo $description?>" href="<?php echo $hrefBanner?>">
 				<img class="" alt="banner" src ="<?php echo $imgBanner?>" />
 			</a>
-			<div id="sales">
-				<a id="buynow" href="/"><img src="icon/iconBuyNow.png" alt="buynow" /></a>
+			<div id="sales" >
+				<a id="buynow" href="/" style="display:none"><img src="icon/iconBuyNow.png" alt="buynow" /></a>
 				<a id="applaynow" href="mailto:PHOTOx1@voo.com.tw"><img src="icon/iconApplyNow.png" alt="applaynow" /></a>
 			</div>
 		</header>
@@ -150,6 +193,7 @@ default:
 		<div class="framesContainer center mainPage">
 			<div class="stream">
 				<div id="frame" class="frame">
+					<hr />
 					<a class="photo" href="objectPage.html">
 						<div class="rectify ">
 							<img src="" alt="thumbnail" />
@@ -178,7 +222,6 @@ default:
 							<span class="column">views</span>
 						</div>
 					</div>
-					<hr />
 				</div>
 			</div>
 		</div>
@@ -199,7 +242,7 @@ default:
 	<button onclick="$('#header img').toggle()">banner toggle</button>
 
 </div>
-<div id="topBar">
+<div id="topBar" style="display:d none">
 	<div class="container">
 		<div id="" class="left">
 			<button id="categoryButton" class="button"> 
@@ -254,24 +297,6 @@ VooProjectB.oid="<?php echo $oid ?>";
 VooProjectB.uid="<?php echo $uid ?>";
 VooProjectB.page="<?php echo $page ?>";
 VooProjectB.start();
-</script>
-<!-- ======================================================================== bot plugins -->
-<!-- Start Alexa Certify Javascript -->
-<script type="text/javascript">
-_atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
-(function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
-</script>
-<noscript><img src="" style="display:none" height="1" width="1" alt="" /></noscript>
- <!-- Google Analytics -->
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-46646053-1', 'photox1.com');
-  ga('send', 'pageview');
-
 </script>
 </body>
 </html>

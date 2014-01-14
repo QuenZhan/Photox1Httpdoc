@@ -247,5 +247,16 @@ case"getSingleObject":
 		break;
 	}
 	break;
+case"getObjects":
+	$page=0;	if(array_key_exists("page",$_POST))$page=$_POST["page"];
+
+	echo '{"eroor":0
+			,"total":1
+			,"page":'.$page.'
+			}';
+	break;
+default:
+	echo "bah";
+	break;
 }
 ?>
