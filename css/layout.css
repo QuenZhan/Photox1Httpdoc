@@ -210,8 +210,9 @@ display:inline-block;
 vertical-align:top;
 margin-right:7px;
 }
-.stream:last-child{
+.stream[class~=right]{
 margin:0;
+float:none;
 }
 .frame{
 display:block;
@@ -399,7 +400,7 @@ position:relative;
 hr{
 background:#ddd;
 border:1px solid #ddd;
-margin:24px 0;
+margin:24px 0 7px;
 }
 .endOfPage{
 padding:0 8px;

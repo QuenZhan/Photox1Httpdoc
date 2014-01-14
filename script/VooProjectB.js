@@ -262,53 +262,34 @@ var VooProjectB={first:false
 		if($(".mainPage").length>0)num=2;
 		$(".center").css("width",num*($(".stream").outerWidth()+7)-7)
 		$(".stream").remove();
+		this.streamPush();
+		// this.streams=[];
+		// this.streams.push($("<div class='stream'></div>").appendTo($(".framesContainer")));
+		// this.streams.push($("<div class='stream right'></div>").appendTo($(".framesContainer")));
+		// for(var i=0;i<num;i++){
+		// }
+	}
+	,streamPush:function(){
 		this.streams=[];
-		for(var i=0;i<num;i++){
-			this.streams.push($("<div class='stream'></div>").appendTo($(".framesContainer")));
-		}
+		this.streams.push($("<div class='stream'></div>"));
+		this.streams.push($("<div class='stream right'></div>"));
+		$("<div class=''></div>")
+			.append(this.streams[0])
+			.append(this.streams[1])
+			.appendTo($(".framesContainer"));
 	}
 	,streamClear:function(){
-		var ddd=this.streams[0].heigth()-this.streams[1].heigth()
-		if(Math.abs(ddd)>50)return;
-		this.streams=[];
-		for(var i=0;i<2;i++){
-			this.streams.push($("<div class='stream'></div>").appendTo($(".framesContainer")));
-		}
-	}
-	,loadNext07:function loadNext07(){
-		for(var i=0;i<this.imgFileNames.length;i++){
-			var imgUrl="photoBatchOutput/400/"+this.imgFileNames[i]
-				,streams=this.streams;
-			var stream=streams[0];
-			for(var key in streams){
-				if(stream.height()>streams[key].height())stream=streams[key];
-			}
-			stream=streams[i%streams.length];
-			var jFrame=this.jFrameSeed.clone();
-			jFrame
-				.appendTo(stream).end()
-				.find(".photo img")
-					.each(function(){
-						this.onload=function(index){
-							$(this).prop("frame").find(".loading").fadeOut()
-						}
-						this.src=imgUrl;
-					})
-					.prop("frame",jFrame)
-					.end()
-				.find("a").attr("href","object/eric.cc.hsu_"+U.pad(i,3)).end()
-				;
-		}
+		var ddd=this.streams[0].height()-this.streams[1].height()
+		// alert(ddd);
+		// if(Math.abs(ddd)>50)return;
+		this.streamPush();
 	}
 	,loadPage:function(i){
 		var a
-			// ,imgUrl="photoBatchOutput/400/"+this.imgFileNames[i]
 			,streams=this.streams
 			,frame=this.data[i];
 		var stream=streams[0];
-		for(var key in streams){
-			if(stream.height()>streams[key].height())stream=streams[key];
-		}
+		if(i%4==3)this.streamClear();
 		stream=streams[i%streams.length];
 		var jFrame=this.jFrameSeed.clone();
 		jFrame
@@ -354,17 +335,11 @@ var VooProjectB={first:false
 			,jBanner=$("#banner")
 			,fbUrl="https://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2F&width&layout=button_count&action=like&show_faces=false&share=true&height=21"
 			;
-		str=thisUrl.replace(domainName,"");
-		var split=str.split("/");
-		// jBanner
-			// .attr("href","http://www.facebook.com/nelson0719")
-			// .find("img").attr("src","content/nelson.jpg");
-		// alert(page);
 		VooProjectB.generateData(this.uid);
 		switch(this.page){
 		case"object":
-			str=thisUrl.replace(domainName+"/object/eric.cc.hsu_","");
-			var num=parseInt(str)
+			// str=thisUrl.replace(domainName+"/object/eric.cc.hsu_","");
+			var num//=parseInt(str)
 				,i
 				,frame
 				,jIframe=$("#pageObject iframe")
@@ -372,19 +347,19 @@ var VooProjectB={first:false
 					.detach()
 					
 				;
-			$("#pageObject")
-				.css("display","block")
-				;
-			for(i in VooProjectB.rawdata){
-				// if(VooProjectB.rawdata[i].oid==split[1]){
-				if(VooProjectB.rawdata[i].oid==this.oid){
-					frame=VooProjectB.rawdata[i];
-				}
-			}
-			VooProjectB.jImgLoadBuffer($("#pageObject .photo img"),"user/"+frame.uid+"/photo/800/"+frame.filename);
-			$("#pageObject a").attr("href",frame.hyperllink);
-			$("#pageObject .title").text(frame.title);
-			$("#pageObject .description").html(frame.description.replace("\n","<br>"));
+			// $("#pageObject")
+				// .css("display","block")
+				// ;
+			// for(i in VooProjectB.rawdata){
+				// if(VooProjectB.rawdata[i].oid==this.oid){
+					// frame=VooProjectB.rawdata[i];
+				// }
+			// }
+			// VooProjectB.jImgLoadBuffer($("#pageObject .photo img"),"user/"+frame.uid+"/photo/800/"+frame.filename);
+			VooProjectB.jImgLoadBuffer($("#pageObject .photo img"),$("#pageObject .photo img").attr("src"));
+			// $("#pageObject a").attr("href",frame.hyperllink);
+			// $("#pageObject .title").text(frame.title);
+			// $("#pageObject .description").html(frame.description.replace("\n","<br>"));
 			jIframe
 				.attr("src",fbUrl.replace("href=http%3A%2F%2Fphotox1.com%2F","href="+encodeURIComponent("http://photox1.com/user/"+frame.uid+"/")))
 				.appendTo($("#pageObject .actions"))
@@ -392,18 +367,6 @@ var VooProjectB={first:false
 		case"user":
 			VooProjectB.data=[];
 			VooProjectB.generateData(this.uid);
-			// switch(str){
-			// case"eric.cc.hsu":
-				// jBanner
-					// .attr("href","user/eric.cc.hsu/")
-					// .find("img").attr("src","content/bannerFrame.jpg");
-				// break;
-			// case"nelson0719":
-				// jBanner
-					// .attr("href","http://www.facebook.com/nelson0719")
-					// .find("img").attr("src","content/nelson.jpg");
-				// break;
-			// }
 		default:
 			$(function(){
 				VooProjectB.jFrameSeed=$("#frame");
@@ -418,7 +381,6 @@ var VooProjectB={first:false
 			});
 		}
 		$("#categoryButton").click(function(){
-			// alert("bahbah");
 			$("#panel")
 				.slideToggle()
 				.click(function(){
@@ -440,4 +402,3 @@ var VooProjectB={first:false
 		}
 	}
 }
-// VooProjectB.start();
