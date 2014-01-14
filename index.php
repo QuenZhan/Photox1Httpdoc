@@ -1,25 +1,7 @@
 ﻿<?php
-
-//firephp ini
-// require_once('FirePHPCore/FirePHP.class.php');
-// ob_start();
-// $firephp = FirePHP::getInstance(true);
-//my staff
-function be($apiName,$parameter){
-	//curl;
-	// global $root;
-	// $ch = curl_init();
-	// curl_setopt($ch, CURLOPT_URL,$root."dummyBackend.php?name=".$apiName);
-	// curl_setopt($ch, CURLOPT_POST, true); // 啟用POST
-	// curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameter)); 
-	// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
-	// $output=curl_exec($ch);
-	// $result=json_decode($output);
-	// return $result;
-}
+function be($apiName,$parameter){}
 function curPageURL(){
 	$pageURL = 'http';
-	// if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
 	$pageURL .= "://";
 	if ($_SERVER["SERVER_PORT"] != "80") {
 		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
@@ -28,12 +10,16 @@ function curPageURL(){
 	}
 	return $pageURL;
 }
-$root="http://localhost/photox1/";
 $title="PHOTOx1 攝影展覽";
+if(($_SERVER["SERVER_NAME"]=="localhost")){
+	$root="http://localhost/photox1/";
+	$title="local:".$title;
+}
+else $root="http://www.PHOTOx1.com/";
 $imgBanner="";
 $hrefBanner="";
-$description="這是一個「攝影展覧」網站";
-$uid="nelson0719"; // 預設的uid，影響 mainPage 顯示的內容
+$description="攝影展覧網站";
+$uid="kinghand.wang"; // 預設的uid，影響 mainPage 顯示的內容
 $explode=explode("/",$_SERVER["REQUEST_URI"]);
 $page=$explode[1];
 $object=null;
@@ -57,17 +43,17 @@ if(array_key_exists("uid",$_GET))$uid=$_GET["uid"];
 switch($uid){
 case"eric.cc.hsu":
 	$description="陽明山秘境 - Eric the Traveler";
-	$imgBanner="content/bannerFrame.jpg";
+	$imgBanner=$root."content/bannerFrame.jpg";
 	$hrefBanner="user/eric.cc.hsu/";
 	break;
 case"nelson0719":
 	$description="那一年 我到過的尼泊爾 - Nelson Wong";
-	$imgBanner="content/nelson.jpg";
+	$imgBanner=$root."content/nelson.jpg";
 	$hrefBanner="http://www.facebook.com/nelson0719";
 	break;
 case"kinghand.wang":
 	$description="賞喵悅目 小賢豆豆媽";
-	$imgBanner="content/bannerFrameKinghand.jpg";
+	$imgBanner=$root."content/bannerFrameKinghand.jpg";
 	$hrefBanner="https://www.facebook.com/kinghand.wang";
 	break;
 }
@@ -76,15 +62,12 @@ case"kinghand.wang":
 <!DOCTYPE html>
 <html lang='zh-TW'>
 <head>
-	<base href="http://photox1.com/" /> 
-	<!-- <base href="http://localhost/photox1/" /> -->
+	<base href="<?php echo $root ?>" />
 	<title><?php echo $title ?></title>
-	<!-- IRMsQ8KTqnGZthsWBda2YjDXTdU --> 
-	<!-- Alexa for PHOTOx1.com -->
 	<link href='css/han.min.css' rel='stylesheet'/>
 	<link href='css/layout.css' rel='stylesheet'/>
 	<LINK REL="SHORTCUT ICON" HREF="favicon.gif" />
-	<meta name="keywords" content="photo,photograph,hub,攝影,Curation">
+	<meta name="keywords" content="photo,photography,photograph,photographer,exhibition,expo,curation,攝影展,攝影,展覧">
 	<meta name="author" content="voo.com.tw">
 	<meta name="description" content="<?php echo $description ?>">
 	<meta property="og:url" content="<?php echo curPageURL() ?>" />
@@ -95,6 +78,7 @@ case"kinghand.wang":
 	<meta property="og:site_name" content="PHOTOx1" />
 </head>
 <body>
+<!-- ======================================================================== start of plugins -->
 <!-- facebook plugin  -->
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
@@ -104,6 +88,23 @@ case"kinghand.wang":
   js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
+<!-- Start Alexa Certify Javascript -->
+<script type="text/javascript">
+_atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
+(function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
+</script>
+<noscript><img src="" style="display:none" height="1" width="1" alt="" /></noscript>
+ <!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46646053-1', 'photox1.com');
+  ga('send', 'pageview');
+
+</script>
 <!-- ======================================================================== end of plugins -->
 <div id="paddingSpace"></div>
 <?php if($page=="object"): ?>
@@ -219,7 +220,7 @@ default:
 				設定
 			</button>
 		</div>
-		<h1 id="siteTitleWrapper" ><a class="header column" id="siteTitle" href="/" title="PHOTOX1"></a></h1>
+		<h1 id="siteTitleWrapper" ><a class="header column" id="siteTitle" href="/" title="PHOTOx1"></a></h1>
 	</div>
 </div>
 <div id="panel" class="slideDown">
@@ -245,33 +246,13 @@ default:
 	</ol>
 </div>
 <script src="script/jquery-1.10.1.min.js"></script>
-<script type="text/javascript" src="script/jquery.endless-scroll.js"></script>
 <script src="script/Utility.js"></script>
-<script src="script/InfinityScroll.js"></script>
 <script src="script/VooProjectB.js"></script>
 <script>
 VooProjectB.oid="<?php echo $oid ?>";
 VooProjectB.uid="<?php echo $uid ?>";
 VooProjectB.page="<?php echo $page ?>";
 VooProjectB.start();
-</script>
-<!-- ======================================================================== bot plugins -->
-<!-- Start Alexa Certify Javascript -->
-<script type="text/javascript">
-_atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
-(function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
-</script>
-<noscript><img src="" style="display:none" height="1" width="1" alt="" /></noscript>
- <!-- Google Analytics -->
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-46646053-1', 'photox1.com');
-  ga('send', 'pageview');
-
 </script>
 </body>
 </html>
