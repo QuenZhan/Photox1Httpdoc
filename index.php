@@ -1,5 +1,4 @@
 ﻿<?php
-function be($apiName,$parameter){}
 function curPageURL(){
 	$pageURL = 'http';
 	$pageURL .= "://";
@@ -40,11 +39,12 @@ case"user":
 	break;
 }
 if(array_key_exists("uid",$_GET))$uid=$_GET["uid"];
+// 變更banner的內容
 switch($uid){
 case"eric.cc.hsu":
-	$description="陽明山秘境 - Eric the Traveler";
-	$imgBanner=$root."content/bannerFrame.jpg";
-	$hrefBanner="user/eric.cc.hsu/";
+	$description="陽明山秘境 - Eric the Traveler";	//展覽描述
+	$imgBanner=$root."content/bannerFrame.jpg";		//展覽banner
+	$hrefBanner="user/eric.cc.hsu/";				//展覽banner 的連結
 	break;
 case"nelson0719":
 	$description="那一年 我到過的尼泊爾 - Nelson Wong";
@@ -108,27 +108,25 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 <!-- ======================================================================== end of plugins -->
 <div id="paddingSpace"></div>
 <?php if($page=="object"): ?>
-<div id="pageObject">
-	<article>
-		<div class="center frame object">
-			<a class="photo">
-				<img src="content/nelson.jpg" alt="objectPhoto" />
-				<div class="loading">
-					<div class="vamWrapper">
-						<span class="vam">loading...</span>
-					</div>
+<article>
+	<div class="center frame object">
+		<a class="photo">
+			<img src="content/nelson.jpg" alt="objectPhoto" />
+			<div class="loading">
+				<div class="vamWrapper">
+					<span class="vam">loading...</span>
 				</div>
-			</a>
-			<h1 class="title">陽明山秘境</h1>
-			<div class="actions">
-				<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
 			</div>
-			<div>
-				<span class="description">Eric the Traveler 攝影展 - 陽明山秘境</span>
-			</div>
+		</a>
+		<h1 class="title">陽明山秘境</h1>
+		<div class="actions">
+			<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
 		</div>
-	</article>
-</div>
+		<div>
+			<span class="description">Eric the Traveler 攝影展 - 陽明山秘境</span>
+		</div>
+	</div>
+</article>
 <?php endif;?>
 <?php 
 switch($page):
@@ -165,10 +163,6 @@ default:
 					<div class="footer">
 						<menu class="actions">
 							<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
-							<!-- <img class="column fbAction" src="icon/fbIcon.jpg" alt="imgbutton"/> -->
-							<!-- <img class="column" src="icon/fbShareicon.jpg" alt="imgbutton"/> -->
-							<!-- <div class="fb-like column" data-href="http://photox1.com/user/eric.cc.hsu/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div> -->
-							
 						</menu>
 						<div class="info">
 							<div class="avatarPhotoWrapper">
@@ -194,35 +188,25 @@ default:
 		</div>
 	</div>
 </footer>
-<div class="debug">
-	<input type="button" onclick="$('.debug').toggle()" value="hide"/>
-	debug area
-	<button onclick="$('#header img').toggle()">banner toggle</button>
-
-</div>
+<!-- top bar -->
 <div id="topBar">
 	<div class="container">
 		<div id="" class="left">
 			<button id="categoryButton" class="button"> 
 				選單
 			</button>
-			<input id="search" class="column inputText button" type="text" value="search" />
-		</div>
-		<div id="acount" class="">
-			<div id="avatarPhotoWrapper" class="column">
-				<!-- <img id="avatarPhoto" src="favicon.gif" alt="avatarPhoto" /> -->
-			</div>
-			<a href="" id="acountName" class="column button">Maria S.</a>
 		</div>
 		<div class="right">
-			<!-- <button id="" class="button">範例按鈕</button> -->
 			<button id="setting" class="button" href="contact.html">
 				設定
 			</button>
 		</div>
-		<h1 id="siteTitleWrapper" ><a class="header column" id="siteTitle" href="/" title="PHOTOx1"></a></h1>
+		<h1 id="siteTitleWrapper" >
+			<a class="header column" id="siteTitle" href="/" title="PHOTOx1"></a>
+		</h1>
 	</div>
 </div>
+<!-- 左上角分類選單 -->
 <div id="panel" class="slideDown">
 	<div class="">
 		<div class="background left">
@@ -238,6 +222,7 @@ default:
 		</div>
 	</div>
 </div>
+<!-- 右上角分類選單 -->
 <div id="settingSlidedown" class="slideDown">
 	<ol class="background right">
 		<li><a href="mailto:PHOTOx1@voo.com.tw">報名展出 </a>

@@ -6,6 +6,7 @@ var VooProjectB={first:false
 	,streams:[]
 	,jFrameSeed:false
 	,data:[]
+//rawdata :資料存放的變數
 	,rawdata:[{"oid":"eric.cc.hsu_001","uid":"eric.cc.hsu","原始檔名":"7DP_1040.JPG","title":"陽明山秘境","description":"Eric the Traveler 攝影展 - 陽明山秘境","hyperllink":"user/eric.cc.hsu/","filename":"7DP_1040.JPG"},
 {"oid":"eric.cc.hsu_002","uid":"eric.cc.hsu","原始檔名":"7DP_1041.JPG","title":"陽明山秘境","description":"Eric the Traveler 攝影展 - 陽明山秘境","hyperllink":"user/eric.cc.hsu/","filename":"7DP_1041.JPG"},
 {"oid":"eric.cc.hsu_003","uid":"eric.cc.hsu","原始檔名":"7DP_1042.JPG","title":"陽明山秘境","description":"Eric the Traveler 攝影展 - 陽明山秘境","hyperllink":"user/eric.cc.hsu/","filename":"7DP_1042.JPG"},
@@ -209,7 +210,6 @@ var VooProjectB={first:false
 {"oid":"kinghand.wang_030","uid":"kinghand.wang","原始檔名":"219J6039_1.jpg","title":"貓麻豆","description":"賞喵悅目 by 小賢豆豆媽","hyperllink":"http://www.facebook.com/kinghand.wang","filename":"kinghand.wang_030.JPG"},
 {"oid":"kinghand.wang_031","uid":"kinghand.wang","原始檔名":"219J7470.jpg","title":"貓咪無影腳","description":"這招可不是誰都會的喲！貓咪派的高手才能有這麼漂亮的招式呢！","hyperllink":"http://www.facebook.com/kinghand.wang","filename":"kinghand.wang_031.JPG"},
 {"oid":"kinghand.wang_032","uid":"kinghand.wang","原始檔名":"219J9588.jpg","title":"貓麻豆","description":"賞喵悅目 by 小賢豆豆媽","hyperllink":"http://www.facebook.com/kinghand.wang","filename":"kinghand.wang_032.JPG"}]
-	// ,imgFileNames
 	,generateData:function(uid){
 		var key
 			,frame
@@ -263,11 +263,6 @@ var VooProjectB={first:false
 		$(".center").css("width",num*($(".stream").outerWidth()+7)-7)
 		$(".stream").remove();
 		this.streamPush();
-		// this.streams=[];
-		// this.streams.push($("<div class='stream'></div>").appendTo($(".framesContainer")));
-		// this.streams.push($("<div class='stream right'></div>").appendTo($(".framesContainer")));
-		// for(var i=0;i<num;i++){
-		// }
 	}
 	,streamPush:function(){
 		this.streams=[];
@@ -280,8 +275,6 @@ var VooProjectB={first:false
 	}
 	,streamClear:function(){
 		var ddd=this.streams[0].height()-this.streams[1].height()
-		// alert(ddd);
-		// if(Math.abs(ddd)>50)return;
 		this.streamPush();
 	}
 	,loadPage:function(i){
@@ -337,10 +330,6 @@ var VooProjectB={first:false
 			;
 		str=thisUrl.replace(domainName,"");
 		var split=str.split("/");
-		// jBanner
-			// .attr("href","http://www.facebook.com/nelson0719")
-			// .find("img").attr("src","content/nelson.jpg");
-		// alert(page);
 		VooProjectB.generateData(this.uid);
 		switch(this.page){
 		case"object":
@@ -357,7 +346,6 @@ var VooProjectB={first:false
 				.css("display","block")
 				;
 			for(i in VooProjectB.rawdata){
-				// if(VooProjectB.rawdata[i].oid==split[1]){
 				if(VooProjectB.rawdata[i].oid==this.oid){
 					frame=VooProjectB.rawdata[i];
 				}
@@ -373,18 +361,6 @@ var VooProjectB={first:false
 		case"user":
 			VooProjectB.data=[];
 			VooProjectB.generateData(this.uid);
-			// switch(str){
-			// case"eric.cc.hsu":
-				// jBanner
-					// .attr("href","user/eric.cc.hsu/")
-					// .find("img").attr("src","content/bannerFrame.jpg");
-				// break;
-			// case"nelson0719":
-				// jBanner
-					// .attr("href","http://www.facebook.com/nelson0719")
-					// .find("img").attr("src","content/nelson.jpg");
-				// break;
-			// }
 		default:
 			$(function(){
 				VooProjectB.jFrameSeed=$("#frame");
@@ -394,7 +370,6 @@ var VooProjectB={first:false
 			$("#pageMain ,#sales").css("display","block");
 		}
 		$("#categoryButton").click(function(){
-			// alert("bahbah");
 			$("#panel")
 				.slideToggle()
 				.click(function(){
@@ -416,4 +391,3 @@ var VooProjectB={first:false
 		}
 	}
 }
-// VooProjectB.start();
