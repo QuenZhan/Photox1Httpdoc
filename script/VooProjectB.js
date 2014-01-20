@@ -1,4 +1,4 @@
-var VooProjectB={first:false
+﻿var VooProjectB={first:false
 	,index:0
 	,page:""
 	,uid:"uid"
@@ -6,7 +6,6 @@ var VooProjectB={first:false
 	,streams:[]
 	,jFrameSeed:false
 	,data:[]
-//rawdata :資料存放的變數
 	,rawdata:[{"oid":"eric.cc.hsu_001","uid":"eric.cc.hsu","原始檔名":"7DP_1040.JPG","title":"陽明山秘境","description":"Eric the Traveler 攝影展 - 陽明山秘境","hyperllink":"user/eric.cc.hsu/","filename":"7DP_1040.JPG"},
 {"oid":"eric.cc.hsu_002","uid":"eric.cc.hsu","原始檔名":"7DP_1041.JPG","title":"陽明山秘境","description":"Eric the Traveler 攝影展 - 陽明山秘境","hyperllink":"user/eric.cc.hsu/","filename":"7DP_1041.JPG"},
 {"oid":"eric.cc.hsu_003","uid":"eric.cc.hsu","原始檔名":"7DP_1042.JPG","title":"陽明山秘境","description":"Eric the Traveler 攝影展 - 陽明山秘境","hyperllink":"user/eric.cc.hsu/","filename":"7DP_1042.JPG"},
@@ -209,7 +208,82 @@ var VooProjectB={first:false
 {"oid":"kinghand.wang_029","uid":"kinghand.wang","原始檔名":"2013 (22).jpg","title":"貓貓土司麵包","description":"好奇的小貓看到好玩的事物，好想立刻從那一端鑽過來。","hyperllink":"http://www.facebook.com/kinghand.wang","filename":"kinghand.wang_029.JPG"},
 {"oid":"kinghand.wang_030","uid":"kinghand.wang","原始檔名":"219J6039_1.jpg","title":"貓麻豆","description":"賞喵悅目 by 小賢豆豆媽","hyperllink":"http://www.facebook.com/kinghand.wang","filename":"kinghand.wang_030.JPG"},
 {"oid":"kinghand.wang_031","uid":"kinghand.wang","原始檔名":"219J7470.jpg","title":"貓咪無影腳","description":"這招可不是誰都會的喲！貓咪派的高手才能有這麼漂亮的招式呢！","hyperllink":"http://www.facebook.com/kinghand.wang","filename":"kinghand.wang_031.JPG"},
-{"oid":"kinghand.wang_032","uid":"kinghand.wang","原始檔名":"219J9588.jpg","title":"貓麻豆","description":"賞喵悅目 by 小賢豆豆媽","hyperllink":"http://www.facebook.com/kinghand.wang","filename":"kinghand.wang_032.JPG"}]
+{"oid":"kinghand.wang_032","uid":"kinghand.wang","原始檔名":"219J9588.jpg","title":"貓麻豆","description":"賞喵悅目 by 小賢豆豆媽","hyperllink":"http://www.facebook.com/kinghand.wang","filename":"kinghand.wang_032.JPG"},
+{"oid":"cappucat_001","uid":"cuppucat","原始檔名":"DSC_0588.jpg","title":"Suka Bali 。1","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_001.jpg"},
+{"oid":"cappucat_002","uid":"cuppucat","原始檔名":"DSC_7077.jpg","title":"Suka Bali 。2","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_002.jpg"},
+{"oid":"cappucat_003","uid":"cuppucat","原始檔名":"DSC_1783.jpg","title":"Suka Bali 。3","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_003.jpg"},
+{"oid":"cappucat_004","uid":"cuppucat","原始檔名":"DSC_9551.jpg","title":"Suka Bali 。4","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_004.jpg"},
+{"oid":"cappucat_005","uid":"cuppucat","原始檔名":"DSC_1658.jpg","title":"Suka Bali 。5","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_005.jpg"},
+{"oid":"cappucat_006","uid":"cuppucat","原始檔名":"IMG_2467.jpg","title":"Suka Bali 。6","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_006.jpg"},
+{"oid":"cappucat_007","uid":"cuppucat","原始檔名":"DSC_0090.jpg","title":"Suka Bali 。7","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_007.jpg"},
+{"oid":"cappucat_008","uid":"cuppucat","原始檔名":"DSC_5730.jpg","title":"Suka Bali 。8","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_008.jpg"},
+{"oid":"cappucat_009","uid":"cuppucat","原始檔名":"DSC_5732 (1).jpg","title":"Suka Bali 。9","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_009.jpg"},
+{"oid":"cappucat_010","uid":"cuppucat","原始檔名":"DSC_5772.jpg","title":"Suka Bali 。10","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_010.jpg"},
+{"oid":"cappucat_011","uid":"cuppucat","原始檔名":"DSC_5956.jpg","title":"Suka Bali 。11","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_011.jpg"},
+{"oid":"cappucat_012","uid":"cuppucat","原始檔名":"DSC_6005.jpg","title":"Suka Bali 。12","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_012.jpg"},
+{"oid":"cappucat_013","uid":"cuppucat","原始檔名":"DSC_6330.jpg","title":"Suka Bali 。13","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_013.jpg"},
+{"oid":"cappucat_014","uid":"cuppucat","原始檔名":"DSC_6333.jpg","title":"Suka Bali 。14","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_014.jpg"},
+{"oid":"cappucat_015","uid":"cuppucat","原始檔名":"DSC_6335.jpg","title":"Suka Bali 。15","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_015.jpg"},
+{"oid":"cappucat_016","uid":"cuppucat","原始檔名":"DSC_6354.jpg","title":"Suka Bali 。16","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_016.jpg"},
+{"oid":"cappucat_017","uid":"cuppucat","原始檔名":"DSC_6780.jpg","title":"Suka Bali 。17","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_017.jpg"},
+{"oid":"cappucat_018","uid":"cuppucat","原始檔名":"DSC_7053.jpg","title":"Suka Bali 。18","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_018.jpg"},
+{"oid":"cappucat_019","uid":"cuppucat","原始檔名":"DSC_7061.jpg","title":"Suka Bali 。19","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_019.jpg"},
+{"oid":"cappucat_020","uid":"cuppucat","原始檔名":"DSC_7323.jpg","title":"Suka Bali 。20","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_020.jpg"},
+{"oid":"cappucat_021","uid":"cuppucat","原始檔名":"DSC_7338.jpg","title":"Suka Bali 。21","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_021.jpg"},
+{"oid":"cappucat_022","uid":"cuppucat","原始檔名":"DSC_7554.jpg","title":"Suka Bali 。22","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_022.jpg"},
+{"oid":"cappucat_023","uid":"cuppucat","原始檔名":"DSC_6747.jpg","title":"Suka Bali 。23","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_023.jpg"},
+{"oid":"cappucat_024","uid":"cuppucat","原始檔名":"DSC_7588.jpg","title":"Suka Bali 。24","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_024.jpg"},
+{"oid":"cappucat_025","uid":"cuppucat","原始檔名":"DSC_7718 (1).jpg","title":"Suka Bali 。25","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_025.jpg"},
+{"oid":"cappucat_026","uid":"cuppucat","原始檔名":"DSC_7719.jpg","title":"Suka Bali 。26","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_026.jpg"},
+{"oid":"cappucat_027","uid":"cuppucat","原始檔名":"DSC_7739.jpg","title":"Suka Bali 。27","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_027.jpg"},
+{"oid":"cappucat_028","uid":"cuppucat","原始檔名":"DSC_7562.jpg","title":"Suka Bali 。28","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_028.jpg"},
+{"oid":"cappucat_029","uid":"cuppucat","原始檔名":"DSC_8163.jpg","title":"Suka Bali 。29","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_029.jpg"},
+{"oid":"cappucat_030","uid":"cuppucat","原始檔名":"DSC_9007.jpg","title":"Suka Bali 。30","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_030.jpg"},
+{"oid":"cappucat_031","uid":"cuppucat","原始檔名":"DSC_8693.jpg","title":"Suka Bali 。31","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_031.jpg"},
+{"oid":"cappucat_032","uid":"cuppucat","原始檔名":"DSC_8722.jpg","title":"Suka Bali 。32","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_032.jpg"},
+{"oid":"cappucat_033","uid":"cuppucat","原始檔名":"DSC_8961.jpg","title":"Suka Bali 。33","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_033.jpg"},
+{"oid":"cappucat_034","uid":"cuppucat","原始檔名":"DSC_9055 (1).jpg","title":"Suka Bali 。34","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_034.jpg"},
+{"oid":"cappucat_035","uid":"cuppucat","原始檔名":"DSC_9060.jpg","title":"Suka Bali 。35","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_035.jpg"},
+{"oid":"cappucat_036","uid":"cuppucat","原始檔名":"DSC_9118.jpg","title":"Suka Bali 。36","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_036.jpg"},
+{"oid":"cappucat_037","uid":"cuppucat","原始檔名":"DSC_9500.jpg","title":"Suka Bali 。37","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_037.jpg"},
+{"oid":"cappucat_038","uid":"cuppucat","原始檔名":"IMG_0489.jpg","title":"Suka Bali 。38","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_038.jpg"},
+{"oid":"cappucat_039","uid":"cuppucat","原始檔名":"DSC_0861.jpg","title":"Suka Bali 。39","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_039.jpg"},
+{"oid":"cappucat_040","uid":"cuppucat","原始檔名":"DSC_1018.jpg","title":"Suka Bali 。40","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_040.jpg"},
+{"oid":"cappucat_041","uid":"cuppucat","原始檔名":"DSC_6731.jpg","title":"Suka Bali 。41","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_041.jpg"},
+{"oid":"cappucat_042","uid":"cuppucat","原始檔名":"DSC_6812.jpg","title":"Suka Bali 。42","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_042.jpg"},
+{"oid":"cappucat_043","uid":"cuppucat","原始檔名":"DSC_6814.jpg","title":"Suka Bali 。43","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_043.jpg"},
+{"oid":"cappucat_044","uid":"cuppucat","原始檔名":"DSC_9046.jpg","title":"Suka Bali 。44","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_044.jpg"},
+{"oid":"cappucat_045","uid":"cuppucat","原始檔名":"DSC_9100.jpg","title":"Suka Bali 。45","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_045.jpg"},
+{"oid":"cappucat_046","uid":"cuppucat","原始檔名":"IMG_0559.jpg","title":"Suka Bali 。46","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_046.jpg"},
+{"oid":"cappucat_047","uid":"cuppucat","原始檔名":"DSC_0928.jpg","title":"Suka Bali 。47","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_047.jpg"},
+{"oid":"cappucat_048","uid":"cuppucat","原始檔名":"DSC_1213.jpg","title":"Suka Bali 。48","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_048.jpg"},
+{"oid":"cappucat_049","uid":"cuppucat","原始檔名":"DSC_1220 2.jpg","title":"Suka Bali 。49","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_049.jpg"},
+{"oid":"cappucat_050","uid":"cuppucat","原始檔名":"DSC_1268 2.jpg","title":"Suka Bali 。50","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_050.jpg"},
+{"oid":"cappucat_051","uid":"cuppucat","原始檔名":"DSC_1297.jpg","title":"Suka Bali 。51","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_051.jpg"},
+{"oid":"cappucat_052","uid":"cuppucat","原始檔名":"DSC_1298.jpg","title":"Suka Bali 。52","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_052.jpg"},
+{"oid":"cappucat_053","uid":"cuppucat","原始檔名":"DSC_1302 2.jpg","title":"Suka Bali 。53","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_053.jpg"},
+{"oid":"cappucat_054","uid":"cuppucat","原始檔名":"DSC_1303 2.jpg","title":"Suka Bali 。54","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_054.jpg"},
+{"oid":"cappucat_055","uid":"cuppucat","原始檔名":"DSC_1329.jpg","title":"Suka Bali 。55","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_055.jpg"},
+{"oid":"cappucat_056","uid":"cuppucat","原始檔名":"IMG_2256.jpg","title":"Suka Bali 。56","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_056.jpg"},
+{"oid":"cappucat_057","uid":"cuppucat","原始檔名":"IMG_2255.jpg","title":"Suka Bali 。57","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_057.jpg"},
+{"oid":"cappucat_063","uid":"cuppucat","原始檔名":"IMG_2381.jpg","title":"Suka Bali 。58","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_063.jpg"},
+{"oid":"cappucat_059","uid":"cuppucat","原始檔名":"DSC_0758.jpg","title":"Suka Bali 。59","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_059.jpg"},
+{"oid":"cappucat_060","uid":"cuppucat","原始檔名":"DSC_0769.jpg","title":"Suka Bali 。60","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_060.jpg"},
+{"oid":"cappucat_061","uid":"cuppucat","原始檔名":"DSC_0793.jpg","title":"Suka Bali 。61","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_061.jpg"},
+{"oid":"cappucat_062","uid":"cuppucat","原始檔名":"DSC_0920.jpg","title":"Suka Bali 。62","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_062.jpg"},
+{"oid":"cappucat_058","uid":"cuppucat","原始檔名":"DSC_2457.jpg","title":"Suka Bali 。63","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_058.jpg"},
+{"oid":"cappucat_064","uid":"cuppucat","原始檔名":"DSC_6592 (1).jpg","title":"Suka Bali 。64","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_064.jpg"},
+{"oid":"cappucat_065","uid":"cuppucat","原始檔名":"DSC_7791.jpg","title":"Suka Bali 。65","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_065.jpg"},
+{"oid":"cappucat_066","uid":"cuppucat","原始檔名":"DSC_7793.jpg","title":"Suka Bali 。66","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_066.jpg"},
+{"oid":"cappucat_067","uid":"cuppucat","原始檔名":"DSC_7818.jpg","title":"Suka Bali 。67","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_067.jpg"},
+{"oid":"cappucat_068","uid":"cuppucat","原始檔名":"DSC_7882.jpg","title":"Suka Bali 。68","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_068.jpg"},
+{"oid":"cappucat_069","uid":"cuppucat","原始檔名":"DSC_7916.jpg","title":"Suka Bali 。69","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_069.jpg"},
+{"oid":"cappucat_070","uid":"cuppucat","原始檔名":"DSC_7933.jpg","title":"Suka Bali 。70","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_070.jpg"},
+{"oid":"cappucat_071","uid":"cuppucat","原始檔名":"DSC_7934.jpg","title":"Suka Bali 。71","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_071.jpg"},
+{"oid":"cappucat_072","uid":"cuppucat","原始檔名":"DSC_7968.jpg","title":"Suka Bali 。72","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_072.jpg"},
+{"oid":"cappucat_073","uid":"cuppucat","原始檔名":"DSC_9320.jpg","title":"Suka Bali 。73","description":"Suka Bali 攝影展 by 卡布媽(NINI)","hyperllink":"http://www.facebook.com/cappucat","filename":"cappucat_073.jpg"}]
+
+	// ,imgFileNames
 	,generateData:function(uid){
 		var key
 			,frame
