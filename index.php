@@ -16,7 +16,7 @@ $title="PHOTOx1 攝影展覽";
 $imgBanner="";
 $hrefBanner="";
 $description="攝影展覧網站";
-$uid="cuppucat"; // 預設的uid，影響 mainPage 顯示的內容
+$uid="cappucat"; // 預設的uid，影響 mainPage 顯示的內容
 $explode=explode("/",$_SERVER["REQUEST_URI"]);
 $page=$explode[1];
 $object=null;
@@ -53,10 +53,10 @@ case"kinghand.wang":
 	$imgBanner=$root."content/bannerFrameKinghand.jpg";
 	$hrefBanner="https://www.facebook.com/kinghand.wang";
 	break;
-case"cuppucat":
+case"cappucat":
 	$description="Suka Bali 卡布媽 NINI";
 	$imgBanner=$root."content/bannerCappucat.jpg";
-	$hrefBanner="http://www.facebook.com/cuppucat";
+	$hrefBanner="http://www.facebook.com/cappucat";
 	break;
 }
 // $firephp->log($page);
