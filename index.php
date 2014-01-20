@@ -1,4 +1,22 @@
 ﻿<?php
+function getUrl($page,$parameter){
+	global $root,$isAliasDone;
+	switch($page){
+	case"user":
+		if($isAliasDone)return $root."user/".$parameter;
+		return $root."?page=".$page."&uid=".$parameter;
+	case"category":
+		if($isAliasDone)return $root."object/".$parameter;break;
+		return $root."?page=".$page."&cate=".$parameter;
+	case"object":
+		if($isAliasDone)return $root."category/".$parameter;
+		return $root."?page=".$page."&category=".$parameter;
+	case"root":
+		return $root;
+	default:
+		return curPageURL();
+	}
+}
 function jsonError(){
 	switch (json_last_error()){
         case JSON_ERROR_NONE:
@@ -45,13 +63,14 @@ function curPageURL(){
 	}
 	return $pageURL;
 }
+$isAliasDone=false;
 $title="PHOTOx1 攝影展覽";
 if(($_SERVER["SERVER_NAME"]=="localhost")){
 	$root="http://localhost/photox1/";
 	$title="local:".$title;
 }
 else $root="http://photox1.com/";
-$beApiRoot='http://test.talkin.cc/voo/api/';
+$beApiRoot='http://54.199.160.200/voo/index.php/dummyApi/';
 $beApiRoot=$root."dummyBackend.php?api=";
 $imgBanner="";
 $hrefBanner="";
@@ -60,6 +79,7 @@ $description="這是一個「攝影展覧」網站";
 $uid="kinghand.wang"; // 預設的uid，影響 mainPage 顯示的內容
 $explode=explode("/",$_SERVER["REQUEST_URI"]);
 $page=$explode[1];		if(array_key_exists("page",$_GET))$page=$_GET["page"];
+$subpage="";			if(array_key_exists("subpage",$_GET))$subpage=$_GET["subpage"];
 $object=array();
 $oid="";
 $category="";			if(array_key_exists("category",$_GET))$category=$_GET["category"];
@@ -79,13 +99,15 @@ case"object":
 	$uid=$object->{'user'}->{"uid"};
 	break;
 case"user":
-	$uid=$explode[2];
+	$uid=$explode[2]; 	if(array_key_exists("uid",$_GET))$uid=$_GET["uid"];
+	$result=be("getUser",array("uid"=>$uid,"count"=>true));
+	$user=$result->{'user'};
+	break;
 case"category":
 	$title=$category;
 	$result=be("getSingleObject",array("oid"=>0));
 	$object=$result->{'targetObject'};
 	$description=$object->{'description'};
-	$result=be("getObjects",array("categoies"=>array($category)));
 	break;
 default:
 	$result=be("getSingleObject",array("oid"=>0));
@@ -100,11 +122,8 @@ default:
 <!DOCTYPE html>
 <html lang='zh-TW'>
 <head>
-	<!-- <base href="http://photox1.com/" />  -->
-	<base href="<?php echo $root ?>" />
+	<base_ href="<?php echo getUrl("root",""); ?>" />
 	<title><?php echo $title ?></title>
-	<!-- IRMsQ8KTqnGZthsWBda2YjDXTdU --> 
-	<!-- Alexa for PHOTOx1.com -->
 	<link href='css/han.min.css' rel='stylesheet'/>
 	<link href='css/layout.css' rel='stylesheet'/>
 	<LINK REL="SHORTCUT ICON" HREF="favicon.gif" />
@@ -117,21 +136,24 @@ default:
 	<meta property="og:image" content="<?php echo $imgBanner ?>" />
 	<meta property="og:description" content="<?php echo $description ?>" />
 	<meta property="og:site_name" content="PHOTOx1" />
-	<style>
-		// #topBar{display:none;}
-	</style>
 </head>
 <body>
 <!-- ======================================================================== start of plugins -->
 <!-- facebook plugin  -->
 <div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+<script>
+  
+
+  // Load the SDK asynchronously
+  (function(d){
+   var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement('script'); js.id = id; js.async = true;
+   js.src = "//connect.facebook.net/en_US/all.js";
+   ref.parentNode.insertBefore(js, ref);
+  }(document));
+
+</script>
 <!-- Start Alexa Certify Javascript -->
 <script type="text/javascript">
 _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
@@ -151,7 +173,10 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 </script>
 <!-- ======================================================================== end of plugins -->
 <div id="paddingSpace"></div>
-<?php if($page=="object"): ?>
+<?php
+ switch($page): 
+ case"object":
+ ?>
 <div id="pageObject">
 	<article>
 		<div class="center frame object">
@@ -165,16 +190,15 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 			</a>
 			<h1 class="title"><?php echo $title ?></h1>
 			<div class="actions">
-				<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
-			</div>
+				<div class="fb-like" data-href="<?php echo getUrl("",""); ?>" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>			</div>
 			<div>
-				<div class="userInfo column">
+				<a class="userInfo column" href="<?php echo getUrl("user",$object->{"user"}->{"uid"}); ?>">
 					<div class="avatarPhotoWrapper column">
 						<img src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg " alt="userPhoto" />
 					</div>
 					<span class="firstName"><?php echo $object->{"user"}->{"firstName"} ?></span>
 					<span class="lastName"><?php echo $object->{"user"}->{"lastName"} ?></span>
-				</div>
+				</a>
 				<div class="column description">
 					<span class=""><?php echo $description ?></span>
 				</div>
@@ -182,13 +206,40 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 		</div>
 	</article>
 </div>
-<?php endif;?>
 <?php 
+	break;
+case"user":
+?>
+<div id="user" class="center">
+	<div>
+		<img class="column" src="http://graph.facebook.com/<?php echo $uid ?>/picture?width=180&height=180" alt="photoUser" style="height:180px;width:180px;" />
+		<div class="column description">
+			<div>
+				<dfn>個人網址</dfn>：<a href="<?php echo $user->{'website'} ?>"><?php echo $user->{'website'} ?></a>
+			</div>
+			<p><?php echo $user->{'introduction'} ?></p>
+		</div>
+		<aside id="userFb" class="column right">
+			<div class="fb-like" data-href="<?php echo getUrl("","");?>" data-width="300" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div>
+		</aside>
+	</div>
+	<aside>
+		<h2 style="background:#ddd;height:100px">一些廣告</h2>
+	</aside>
+	<nav>
+		<a class="button" href="#nogo">展覽</a></li>
+		<a class="button" href="#nogo">上傳的物件</a></li>
+	</nav>
+</div>
+<?php 
+	break;
+endswitch;
 switch($page):
-case"object":break;
+case"user":
+case"object":
+	break;
 default:
 ?>
-<div id="pageMain" class="<?php echo $page ?>">
 	<div id="header">
 		<header class="center relative">
 <?php if($imgBanner!=""):?>
@@ -204,7 +255,14 @@ default:
 			</div>
 		</header>
 	</div>
-	<div id="mainSection" class="pushDown framesContainer center">
+<?php 
+endswitch;
+switch($page):
+case"object":break;
+default:
+?>
+<div id="pageMain" class="">
+	<div id="mainSection" class="pushDown framesContainer center <?php echo $page ?>">
 		<div class="stream">
 			<div id="frame" class="frame">
 				<a class="photo" href="objectPage.html">
@@ -219,25 +277,24 @@ default:
 				</a>
 				<h2 class="title">陽明山秘境</h2>
 				<menu class="actions">
-					<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
-					<!-- <img class="column fbAction" src="icon/fbIcon.jpg" alt="imgbutton"/> -->
-					<!-- <img class="column" src="icon/fbShareicon.jpg" alt="imgbutton"/> -->
-					<!-- <div class="fb-like column" data-href="http://photox1.com/user/eric.cc.hsu/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div> -->
-					
+					<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>					
 				</menu>
-				<div class="userInfo">
+				<a class="userInfo" href="?page=user&uid=">
 					<div class="avatarPhotoWrapper column">
 						<img src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg " alt="userPhoto" />
 					</div>
 					<span class="firstName">firstName</span>
 					<span class="lastName">lastName</span>
-				</div>
+				</a>
 				<hr />
 			</div>
 		</div>
 	</div>
 </div>
-<?php endswitch;?>
+<?php 
+	break;
+endswitch;
+?>
 <footer>
 	<div class="footer  endOfPage">
 		<hr>
@@ -246,38 +303,37 @@ default:
 		</div>
 	</div>
 </footer>
-<div class="debug">
-	<input type="button" onclick="$('.debug').toggle()" value="hide"/>
-	debug area
-	<button onclick="$('#header img').toggle()">banner toggle</button>
-
-</div>
 <div id="topBar" style="display:d none">
 	<div class="container">
 		<div id="" class="left">
-			<button id="categoryButton" class="button"> 
-				選單
-			</button>
+			<button id="categoryButton" class="button">導覽</button>
 		</div>
 		<div class="right">
-			<button id="setting" class="button" href="contact.html">
-				設定
-			</button>
+			<figure class="column afterLogin" style="display:none">
+				<button onclick="VooProjectB.gotoMyPage();" style="padding:0;border:0;">
+					<img id="userPicture" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg" style="height:34px" alt="userPicture" />
+				</button>
+				<button id="userSetting" class="column button">使用者名稱</button>
+			</figure>
+			<div class="beforeLogin">
+				<button onclick="VooProjectB.login();" class="button" >登入</button>
+				<button id="setting" class="button" >設定</button>
+			</div>
 		</div>
 		<h1 id="siteTitleWrapper" >
-			<a class="header column" id="siteTitle" href="<?php echo $root ?>" title="PHOTOX1"></a>
+			<a class="header column" id="siteTitle" href="<?php echo getUrl("root","") ?>" title="PHOTOX1"></a>
 		</h1>
 	</div>
 </div>
 <div id="panel" class="slideDown">
 	<div class="background left">
 		<ul class="column">
-			<li><a href="user/kinghand.wang/">賞喵悅目 - 小賢豆豆媽</a></li>
-			<li><a href="user/nelson0719/">那一年 我到過的尼泊爾 - Nelson Wong</a></li>
-			<li><a href="user/eric.cc.hsu/">陽明山秘境 - Eric the Traveler</a></li>
+			<li><a href="<?php echo getUrl("user","kinghand.wang");?>">賞喵悅目 - 小賢豆豆媽</a></li>
+			<li><a href="<?php echo getUrl("user","nelson0719");?>">那一年 我到過的尼泊爾 - Nelson Wong</a></li>
+			<li><a href="<?php echo getUrl("user","eric.cc.hsu");?>">陽明山秘境 - Eric the Traveler</a></li>
 		</ul>
 		<ul class="column">
-			<li><a href="?page=category&category=類別">類別bla</a>
+			<li><a href="<?php echo getUrl("category","類別");?>">類別bla</a>
 			<li>類別
 			<li>類別
 		</ul>
@@ -285,23 +341,34 @@ default:
 </div>
 <div id="settingSlidedown" class="slideDown">
 	<ol class="background right">
-		<li><a >登入</a>
+		<li class="afterLogin"><button onclick="VooProjectB.gotoMyPage();">個人首頁</button>
+		<li class="afterLogin"><button onclick="VooProjectB.logout();">登出</button>
 		<li><a href="mailto:PHOTOx1@voo.com.tw">報名展出 </a>
 		<li><a href="mailto:PHOTOx1@voo.com.tw">聯絡我們</a>
 		<li><a href="http://www.facebook.com/PHOTOx1">關於我們</a>
 		<li><a >隱私權政策</a>
 	</ol>
 </div>
+<script src="script/cookie.min.js"></script>
 <script src="script/jquery-1.10.1.min.js"></script>
-<script type="text/javascript" src="script/jquery.endless-scroll.js"></script>
 <script src="script/Utility.js"></script>
 <script src="script/InfinityScroll.js"></script>
 <script src="script/VooProjectB.js"></script>
 <script src="script/UI.js"></script>
 <script>
+window.fbAsyncInit = function(){
+	  FB.init({
+		appId      : '1429498433953219',
+		status     : true, // check login status
+		cookie     : true, // enable cookies to allow the server to access the session
+		xfbml      : true  // parse XFBML
+	  });
+	VooProjectB.subscribeFbAuthResponseChange();
+};
+VooProjectB.isAliasDone="<?php echo $isAliasDone ?>";
+VooProjectB.root="<?php echo $root ?>";
 VooProjectB.beApiRoot="<?php echo $beApiRoot ?>";
 VooProjectB.oid="<?php echo $oid ?>";
-VooProjectB.uid="<?php echo $uid ?>";
 VooProjectB.page="<?php echo $page ?>";
 <?php 
 switch($page):
@@ -314,6 +381,7 @@ VooProjectB.mainPage();
 <?php
 endswitch;
 ?>
+VooProjectB.uiAuthStatus();
 </script>
 </body>
 </html>
