@@ -1,6 +1,4 @@
 var VooProjectB={first:false
-	,isAliasDone:false
-	,root:""
 	,index:0
 	,indexPage:0
 	,page:""
@@ -10,6 +8,37 @@ var VooProjectB={first:false
 	,streams:[]
 	,jFrameSeed:false
 	,data:[]
+	,generateData:function(uid){
+		var key
+			,frame
+			,data
+			;
+		for(key in this.rawdata){
+			frame=this.newFrame();
+			data=this.rawdata[key];
+			if(data.uid!=uid)continue;
+			frame.oid=data.oid;
+			frame.title=data.title;
+			frame.description=data.description;
+			frame.hyperllink=data.hyperllink;
+			frame.user.uid=data.uid;
+			frame.photos[2]="user/"+data.uid+"/photo/400/"+data.filename;
+			this.data.push(frame);
+		}
+	}
+	,newFrame:function(){
+		return {first:false
+			,oid:"oid"
+			,type:"type"
+			,categoryId:"categoryId"
+			,status:"status"
+			,title:"title"
+			,description:"description"
+			,photos:["原始","300","400","800"]
+			,hyperllink:"hyperllink"
+			,user:{uid:"uid"}
+		};
+	}
 	,be:function(apiName,parameter){
 		
 	}
@@ -45,25 +74,9 @@ var VooProjectB={first:false
 	,streamClear:function(){
 		switch(this.page){
 		case"category":
-		case"user":
 			return;
 		}
 		this.streamPush(2);
-	}
-	,getUrl:function(page,parameter){
-		switch(page){
-		case"user":
-			if(this.isAliasDone)return this.root+"user/"+parameter;
-			return this.root+"?page="+page+"&uid="+parameter;
-		case"category":
-			if(this.isAliasDone)return this.root+"object/"+parameter;break;
-			return this.root+"?page="+page+"&cate="+parameter;
-		case"object":
-			if(this.isAliasDone)return this.root+"category/"+parameter;
-			return this.root+"?page="+page+"&category="+parameter;
-		default:
-			return this.root;
-		}
 	}
 	,loadPage:function(i){
 		var a
@@ -94,7 +107,6 @@ var VooProjectB={first:false
 						$(this).prop("frame").find(".loading").fadeOut()
 					}
 					switch(VooProjectB.page){
-					case"user":
 					case"category":		photo=frame.photoCategory;break;
 					default:			photo=frame.photoCuration;break;
 					}
@@ -108,8 +120,7 @@ var VooProjectB={first:false
 			.find(".firstName").text(frame.user.firstName).end()
 			.find(".lastName").text(frame.user.lastName).end()
 			.find(".title").text(frame.title).end()
-			.find("iframe").attr("src",this.fbReplace(this.getUrl("user",frame.user.uid))).end()
-			.find(".userInfo").attr("href",this.getUrl("user",frame.user.uid)).end()
+			.find("iframe").attr("src",this.fbReplace("http://photox1.com/user/"+frame.user.uid+"/")).end()
 			;
 	}
 	,fbReplace:function(url){
@@ -174,82 +185,6 @@ var VooProjectB={first:false
 		})
 		.always(function() {
 			// alert( "finished" );
-		});
-	}
-	,checkLoginStatus:function(){
-		// if()
-	}
-	,subscribeFbAuthResponseChange:function(){
-		 FB.Event.subscribe('auth.authResponseChange', function(response) {
-			if (response.status === 'connected') {
-				// get self data
-				FB.api(
-					"/me",
-					function (response) {
-						var url="http://graph.facebook.com/"+VooProjectB.uid+"/picture?type=small";
-						if(response && !response.error){
-							VooProjectB.uid=response.username
-							$("#userPicture").attr("src",url);
-							$("#userSetting").text(VooProjectB.uid);
-						}
-						$(".afterLogin").show(0);
-						$(".beforeLogin").hide(0);
-						CookieJS.set({
-							name:"uid"
-							,value:VooProjectB.uid
-							,path: '/'
-							,expire :14
-						});
-						CookieJS.set({
-							name:"userPicture"
-							,value:url
-							,path: '/'
-							,expire :14
-						});
-					}
-				);
-			}else {
-				$(".afterLogin").hide(0);
-				$(".beforeLogin").show(0);
-			}
-		});
-	}
-	,uiAuthStatus:function(){
-		if(!CookieJS.has("uid")){
-			$(".afterLogin").hide(0);
-			$(".beforeLogin").show(0);
-			return;
-		}
-		var uid=CookieJS.get("uid")
-			,url=CookieJS.get("userPicture")
-			;
-		this.uid=uid;
-		$("#userPicture").attr("src",url);
-		$("#userSetting").text(uid);
-		$(".afterLogin").show(0);
-		$(".beforeLogin").hide(0);
-	}
-	,gotoMyPage:function(){
-		window.location=this.getUrl("user",this.uid);
-		// window.location=this.root+"?page=user&uid="+this.uid;
-	}
-	,logout:function(){
-		FB.logout();
-		CookieJS.delete({
-			name: 'uid',
-			path: '/'
-		});
-		this.uiAuthStatus();
-	}
-	,login:function(){
-		
-		FB.login(function(response) {
-			if (response.authResponse) {
-				
-				// The person logged into your app
-			} else {
-				// The person cancelled the login dialog
-			}
 		});
 	}
 }

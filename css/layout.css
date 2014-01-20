@@ -1,15 +1,8 @@
 body, button, input, select, textarea{
 margin:0;
-background:0;
+background:#fff;
 font-family: "Helvetica Neue", Helvetica, Arial, "微軟正黑體", sans-serif;
 color:#aaa7ea;
-}
-#settingSlidedown button{
-display:inline;
-padding:0;
-margin:0;
-border:0;
-color:inherit;
 }
 #buynow{
 position:absolute;
@@ -39,7 +32,6 @@ width:100%;
 color:#aaa;
 /* z-index:10; */
 top:0;
-left:0;
 }
 #paddingSpace{
 display:block;
@@ -52,19 +44,19 @@ padding:8px 8px 1px;
 #topBar .column,#topBar .icon{
 /* margin-top:8px; */
 }
-/* #topBar .column{
+#topBar .column{
 display:inline-block;
 height:20px;
 line-height:20px;
 font-size:16px;
 padding:2px;
 vertical-align:top;
-} */
+}
 #panel .column{
 width:300px;
 padding:0;
 }
-.button{
+#topBar .button{
 display:inline-block;
 background:transparent;
 /* box-shadow:0 0 3px rgba(0,0,0,0.3); */
@@ -75,7 +67,7 @@ color:#aaa;
 font-size:14px;
 line-height:30px;
 }
- .button:hover, .button:active{
+#topBar .button:hover,#topBar .button:active{
 background:#666;
 color:#ddd;
 }
@@ -112,17 +104,6 @@ background-position: 0px -110px;
 /* max-width:100%; */
 }
 #topBar .left{
-}
-#user .description{
-width:290px;
-margin:0;
-padding:0 10px;
-}
-#userFb{
-display:inline-block;
-border:solid 1px #ddd;
-padding:4px;
-height:172px;
 }
 .left{
 display:inline-block;
@@ -252,16 +233,9 @@ text-align:right;
 float:right;
 }
 .frame .userInfo{
-display:none;
-padding:0;
-margin:0;
-border:0;
-color:inherit;
+display:none
 }
-.object .userInfo
-, .category .userInfo
-, .user .userInfo
-{
+.object .userInfo, .category .userInfo{
 display:inline-block;
 }
 .frame .footer .info{
@@ -288,7 +262,7 @@ font-size:16px;
 font-weight:bold;
 margin:2px 0;
 }
-.category .frame,.user .frame{
+.category .frame{
 width:300px;
 }
 .action{
@@ -425,9 +399,6 @@ padding-right:30px;
 }
 .relative{
 position:relative;
-}
-br,hr{
-clear:both;
 }
 hr{
 background:#ddd;

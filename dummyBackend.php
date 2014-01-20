@@ -240,7 +240,6 @@ $user='
 	,"website":"http://www.facebook.com/kinghand.wang"
 	,"firstName":"kinghand"
 	,"lastName":"wang"
-	,"introduction":"introduction"
 }
 ';
 $object='{
@@ -274,6 +273,7 @@ $object='{
 	,"user":'.$user.'
 }
 ';
+http://i.imgur.com/hqEecuW.png
 $object00='{
 	"oid":"abc"
 	,"type":0
@@ -306,11 +306,6 @@ $object00='{
 }';
 if(array_key_exists("api",$_GET))$api=$_GET["api"];
 switch($api){
-case"getUser":
-	echo '{"eroor":0
-		,"user":'.$user.'
-		}';
-	break;
 case"getSingleObject":
 	if(array_key_exists("oid",$_POST))$oid=$_POST["oid"];
 	if(array_key_exists("oid",$_GET))$oid=$_GET["oid"];
