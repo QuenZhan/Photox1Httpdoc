@@ -1,4 +1,5 @@
 var VooProjectB={first:false
+	,streamLayout:""
 	,isAliasDone:false
 	,root:""
 	,index:0
@@ -10,8 +11,8 @@ var VooProjectB={first:false
 	,streams:[]
 	,jFrameSeed:false
 	,data:[]
-	,be:function(apiName,parameter){
-		
+	,be:function(apiName,parameter,reply){
+		$.post(this.beApiRoot+apiName,parameter,reply,"json");
 	}
 	,getObjects:function(){
 		// this.data=
@@ -43,9 +44,8 @@ var VooProjectB={first:false
 		this.streams[num-1].addClass("right");
 	}
 	,streamClear:function(){
-		switch(this.page){
+		switch(this.streamLayout){
 		case"category":
-		case"user":
 			return;
 		}
 		this.streamPush(2);
@@ -73,7 +73,7 @@ var VooProjectB={first:false
 			,i
 			;
 		if(i%4==3)this.streamClear();
-		switch(this.page){
+		switch(this.streamLayout){
 		case"category":
 			stream=streams[0];
 			for(i=0;i<streams.length;i+=1){
@@ -93,8 +93,7 @@ var VooProjectB={first:false
 					this.onload=function(index){
 						$(this).prop("frame").find(".loading").fadeOut()
 					}
-					switch(VooProjectB.page){
-					case"user":
+					switch(VooProjectB.streamLayout){
 					case"category":		photo=frame.photoCategory;break;
 					default:			photo=frame.photoCuration;break;
 					}
@@ -157,7 +156,7 @@ var VooProjectB={first:false
 			,jqxhr
 			;
 		this.indexPage+=1;
-		jqxhr = $.post(this.beApiRoot+"getObjects",parameter, function(data) {
+		this.be("getObjects",parameter,function(data){
 			var i;
 			VooProjectB.data=[];
 			for(i in data.objests){
@@ -165,15 +164,6 @@ var VooProjectB={first:false
 			}
 			VooProjectB.setup();
 			// alert( "success" );
-		},"json")
-		.done(function() {
-			// alert( "second success" );
-		})
-		.fail(function() {
-			console.log("error");
-		})
-		.always(function() {
-			// alert( "finished" );
 		});
 	}
 	,checkLoginStatus:function(){
@@ -186,7 +176,8 @@ var VooProjectB={first:false
 				FB.api(
 					"/me",
 					function (response) {
-						var url="http://graph.facebook.com/"+VooProjectB.uid+"/picture?type=small";
+						var url="http://graph.facebook.com/"+VooProjectB.uid+"/picture?type=small"
+							,user;
 						if(response && !response.error){
 							VooProjectB.uid=response.username
 							$("#userPicture").attr("src",url);
@@ -206,6 +197,17 @@ var VooProjectB={first:false
 							,path: '/'
 							,expire :14
 						});
+						user={
+							uid:VooProjectB.uid
+							,firstName:response.first_name
+							,lastName:response.last_name
+							,signUpFrom:"fb"
+							,gender:response.gender
+							,email:response.email
+							,emailSync:response.email
+				
+						};
+						VooProjectB.be("setUser",{"user":user},function(){});
 					}
 				);
 			}else {
@@ -234,6 +236,9 @@ var VooProjectB={first:false
 		// window.location=this.root+"?page=user&uid="+this.uid;
 	}
 	,logout:function(){
+		VooProjectB.be("setUser",null,function(){
+			location.reload();
+		});
 		FB.logout();
 		CookieJS.delete({
 			name: 'uid',
@@ -242,7 +247,6 @@ var VooProjectB={first:false
 		this.uiAuthStatus();
 	}
 	,login:function(){
-		
 		FB.login(function(response) {
 			if (response.authResponse) {
 				
@@ -250,6 +254,6 @@ var VooProjectB={first:false
 			} else {
 				// The person cancelled the login dialog
 			}
-		});
+		},{scope:'email'});
 	}
 }

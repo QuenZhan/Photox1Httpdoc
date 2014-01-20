@@ -1,4 +1,5 @@
 <?php
+session_start();
 function jsonError(){
 	switch (json_last_error()) {
         case JSON_ERROR_NONE:
@@ -306,6 +307,26 @@ $object00='{
 }';
 if(array_key_exists("api",$_GET))$api=$_GET["api"];
 switch($api){
+case"setUser":
+	$uid="uid";
+	if(array_key_exists("user",$_POST)){
+		// $user=$_POST["user"];
+		$uid=$_POST["user"]["uid"];
+		// switch($_POST["user"]){
+		// case null:
+			// $uid="logout";
+			// break;
+		// default:
+			// $uid=$user->uid;
+			// break;
+		// }
+	}
+	$_SESSION['uid']=$uid;
+	echo '{"eroor":0
+		,"uid":"'.$uid.'"
+		,"psid":"'.session_id().'"
+		}';
+	break;
 case"getUser":
 	echo '{"eroor":0
 		,"user":'.$user.'

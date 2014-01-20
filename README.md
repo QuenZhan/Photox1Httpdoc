@@ -26,8 +26,3 @@ FE負責人	| JimZheng
 1. 完成 0.8 main page
 1. 完成 0.8 object page 
 1. 完成 0.8 category page 
-
-## 一些問題
-
-1. category page 的寬度是否固定
-1. user page 的寬度是否固定

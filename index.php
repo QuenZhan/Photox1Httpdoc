@@ -1,7 +1,10 @@
 ﻿<?php
+session_start();
 function getUrl($page,$parameter){
 	global $root,$isAliasDone;
 	switch($page){
+	case"userUploads":
+	case"userCuration":
 	case"user":
 		if($isAliasDone)return $root."user/".$parameter;
 		return $root."?page=".$page."&uid=".$parameter;
@@ -79,9 +82,10 @@ $description="這是一個「攝影展覧」網站";
 $uid="kinghand.wang"; // 預設的uid，影響 mainPage 顯示的內容
 $explode=explode("/",$_SERVER["REQUEST_URI"]);
 $page=$explode[1];		if(array_key_exists("page",$_GET))$page=$_GET["page"];
-$subpage="";			if(array_key_exists("subpage",$_GET))$subpage=$_GET["subpage"];
 $object=array();
 $oid="";
+$streamLayout="curation";
+$isPublic=true;
 $category="";			if(array_key_exists("category",$_GET))$category=$_GET["category"];
 switch($page){
 case"object":
@@ -98,18 +102,40 @@ case"object":
 	$oid=$object->{'oid'};
 	$uid=$object->{'user'}->{"uid"};
 	break;
+case"userUploads":
+case"userCuration":
 case"user":
 	$uid=$explode[2]; 	if(array_key_exists("uid",$_GET))$uid=$_GET["uid"];
 	$result=be("getUser",array("uid"=>$uid,"count"=>true));
 	$user=$result->{'user'};
+	switch($page){
+	case"userUploads":
+		$streamLayout="category";
+		$title=$uid."上傳的物件";
+		break;
+	case"userCuration":
+	default:
+		$streamLayout="curation";
+		$result=be("getSingleObject",array("oid"=>0));
+		$object=$result->{'targetObject'};
+		$imgBanner=$object->{'photoCuration'}->{"url"};
+		$hrefBanner=$object->{'hyperllink'};
+		$description=$object->{'description'};
+		break;
+	}
+	if(isset($_SESSION['uid'])&&$_SESSION['uid']==$uid){
+		$isPublic=false;
+	}
 	break;
 case"category":
+	$streamLayout="category";
 	$title=$category;
 	$result=be("getSingleObject",array("oid"=>0));
 	$object=$result->{'targetObject'};
 	$description=$object->{'description'};
 	break;
 default:
+	$page="";
 	$result=be("getSingleObject",array("oid"=>0));
 	$object=$result->{'targetObject'};
 	$imgBanner=$object->{'photoCuration'}->{"url"};
@@ -208,6 +234,8 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 </div>
 <?php 
 	break;
+case"userUploads":
+case"userCuration":
 case"user":
 ?>
 <div id="user" class="center">
@@ -223,46 +251,58 @@ case"user":
 			<div class="fb-like" data-href="<?php echo getUrl("","");?>" data-width="300" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div>
 		</aside>
 	</div>
+<?php if(!$isPublic):?>
+	<form>
+		<div>
+			<label for="website">個人網址</label>
+			<input name="website" type="url" />
+		</div>
+		<div>
+			<label for="ad">專頁廣告網址</label>
+			<input name="ad" type="url" />
+		</div>
+		<div>
+			<label for="ad">分享收藏</label>
+			<input name="ad" type="checkbox" />
+		</div>
+		<input type="submit" />
+	</form>
+<?php endif;?>
 	<aside>
 		<h2 style="background:#ddd;height:100px">一些廣告</h2>
 	</aside>
 	<nav>
-		<a class="button" href="#nogo">展覽</a></li>
-		<a class="button" href="#nogo">上傳的物件</a></li>
+		<a class="button" href="<?php echo getUrl("userCuration",$uid);?>">展覽</a>
+		<a class="button" href="<?php echo getUrl("userUploads",$uid);?>">上傳的物件</a>
 	</nav>
 </div>
 <?php 
 	break;
 endswitch;
 switch($page):
+case"":
+case"category":
+case"userUploads":
+case"userCuration":
 case"user":
-case"object":
-	break;
-default:
 ?>
-	<div id="header">
-		<header class="center relative">
+<div id="header">
+	<header class="center relative">
 <?php if($imgBanner!=""):?>
-			<a id="banner" class="" title="<?php echo $description?>" href="<?php echo $hrefBanner?>">
-				<img class="" alt="banner" src ="<?php echo $imgBanner?>" />
-			</a>
+		<a id="banner" class="" title="<?php echo $description?>" href="<?php echo $hrefBanner?>">
+			<img class="" alt="banner" src ="<?php echo $imgBanner?>" />
+		</a>
 <?php else:?>
-			<h1 title="<?php echo $description?>"><?php echo $title ?></h1>
+		<h1 title="<?php echo $description?>"><?php echo $title ?></h1>
 <?php endif;?>
-			<div id="sales" >
-				<a id="buynow" href="/" style="display:none"><img src="icon/iconBuyNow.png" alt="buynow" /></a>
-				<a id="applaynow" href="mailto:PHOTOx1@voo.com.tw"><img src="icon/iconApplyNow.png" alt="applaynow" /></a>
-			</div>
-		</header>
-	</div>
-<?php 
-endswitch;
-switch($page):
-case"object":break;
-default:
-?>
+		<div id="sales" >
+			<a id="buynow" href="/" style="display:none"><img src="icon/iconBuyNow.png" alt="buynow" /></a>
+			<a id="applaynow" href="mailto:PHOTOx1@voo.com.tw"><img src="icon/iconApplyNow.png" alt="applaynow" /></a>
+		</div>
+	</header>
+</div>
 <div id="pageMain" class="">
-	<div id="mainSection" class="pushDown framesContainer center <?php echo $page ?>">
+	<div id="mainSection" class="pushDown framesContainer center <?php echo $streamLayout ?>">
 		<div class="stream">
 			<div id="frame" class="frame">
 				<a class="photo" href="objectPage.html">
@@ -370,6 +410,7 @@ VooProjectB.root="<?php echo $root ?>";
 VooProjectB.beApiRoot="<?php echo $beApiRoot ?>";
 VooProjectB.oid="<?php echo $oid ?>";
 VooProjectB.page="<?php echo $page ?>";
+VooProjectB.streamLayout="<?php echo $streamLayout ?>";
 <?php 
 switch($page):
 case"object":?>
@@ -382,6 +423,7 @@ VooProjectB.mainPage();
 endswitch;
 ?>
 VooProjectB.uiAuthStatus();
+console.log("<?php echo $_SESSION['uid'];?>")
 </script>
 </body>
 </html>
