@@ -29,8 +29,11 @@ var VooProjectB={first:false
 	,widthRectify:function widthRectify(){
 		var num=Math.floor((window.innerWidth-70)/$(".stream").outerWidth());
 		if(num<1)num=1;
-		if($(".mainPage").length>0)num=2;
-		$(".center").css("width",num*($(".stream").outerWidth()+7)-7)
+		if(this.streamLayout=="curation"){
+			num=2;
+			// $(".center").css("width",851);
+		}
+		$(".dynamicWidth").css("width",num*($(".stream").outerWidth()+7)-7);
 		$(".stream").remove();
 		this.streamPush(num);
 	}
@@ -180,23 +183,12 @@ var VooProjectB={first:false
 							,user;
 						if(response && !response.error){
 							VooProjectB.uid=response.username
-							$("#userPicture").attr("src",url);
-							$("#userSetting").text(VooProjectB.uid);
+							url="http://graph.facebook.com/"+VooProjectB.uid+"/picture?type=small"
+							// $("#userPicture").attr("src",url);
+							// $("#userSetting").text(VooProjectB.uid);
 						}
-						$(".afterLogin").show(0);
-						$(".beforeLogin").hide(0);
-						CookieJS.set({
-							name:"uid"
-							,value:VooProjectB.uid
-							,path: '/'
-							,expire :14
-						});
-						CookieJS.set({
-							name:"userPicture"
-							,value:url
-							,path: '/'
-							,expire :14
-						});
+						// $(".afterLogin").show(0);
+						// $(".beforeLogin").hide(0);
 						user={
 							uid:VooProjectB.uid
 							,firstName:response.first_name
@@ -207,44 +199,43 @@ var VooProjectB={first:false
 							,emailSync:response.email
 				
 						};
-						VooProjectB.be("setUser",{"user":user},function(){});
+						VooProjectB.be("setUser",{"user":user},function(data){
+							// if(VooProjectB.uid!=data.uid)location.reload();
+						});
 					}
 				);
 			}else {
-				$(".afterLogin").hide(0);
-				$(".beforeLogin").show(0);
+				// $(".afterLogin").hide(0);
+				// $(".beforeLogin").show(0);
 			}
 		});
 	}
 	,uiAuthStatus:function(){
-		if(!CookieJS.has("uid")){
-			$(".afterLogin").hide(0);
-			$(".beforeLogin").show(0);
-			return;
-		}
+		return;
+		// if(!CookieJS.has("uid")){
+			// $(".afterLogin").hide(0);
+			// $(".beforeLogin").show(0);
+			// return;
+		// }
 		var uid=CookieJS.get("uid")
 			,url=CookieJS.get("userPicture")
 			;
 		this.uid=uid;
-		$("#userPicture").attr("src",url);
-		$("#userSetting").text(uid);
-		$(".afterLogin").show(0);
-		$(".beforeLogin").hide(0);
+		// $("#userPicture").attr("src",url);
+		// $("#userSetting").text(uid);
+		// $(".afterLogin").show(0);
+		// $(".beforeLogin").hide(0);
 	}
 	,gotoMyPage:function(){
 		window.location=this.getUrl("user",this.uid);
 		// window.location=this.root+"?page=user&uid="+this.uid;
 	}
 	,logout:function(){
-		VooProjectB.be("setUser",null,function(){
-			location.reload();
+		FB.logout(function(){
+			VooProjectB.be("setUser",null,function(){
+				location.reload();
+			});
 		});
-		FB.logout();
-		CookieJS.delete({
-			name: 'uid',
-			path: '/'
-		});
-		this.uiAuthStatus();
 	}
 	,login:function(){
 		FB.login(function(response) {
@@ -255,5 +246,16 @@ var VooProjectB={first:false
 				// The person cancelled the login dialog
 			}
 		},{scope:'email'});
+	}
+	,uploadFile:function(){
+		// alert("bah");
+		$('#upload').ajaxSubmit({
+			success:function(data){
+				// console.log(data);
+				// alert(data.url);
+				VooProjectB.jImgLoadBuffer($("#upload .photo img"),data.url);
+			}
+			,dataType:'json'
+		}); 
 	}
 }

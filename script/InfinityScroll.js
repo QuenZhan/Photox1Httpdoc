@@ -1,6 +1,6 @@
 var InfinityScroll={first:false
 	,onEnter:function(direction){
-		alert("onEnter "+direction);
+		// alert("onEnter "+direction);
 	}
 	,padding:100
 	,sur:""

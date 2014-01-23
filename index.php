@@ -3,17 +3,19 @@ session_start();
 function getUrl($page,$parameter){
 	global $root,$isAliasDone;
 	switch($page){
+	case"upload":
+		return $root."?page=".$page;
 	case"userUploads":
 	case"userCuration":
 	case"user":
 		if($isAliasDone)return $root."user/".$parameter;
 		return $root."?page=".$page."&uid=".$parameter;
 	case"category":
-		if($isAliasDone)return $root."object/".$parameter;break;
-		return $root."?page=".$page."&cate=".$parameter;
-	case"object":
 		if($isAliasDone)return $root."category/".$parameter;
 		return $root."?page=".$page."&category=".$parameter;
+	case"object":
+		if($isAliasDone)return $root."object/".$parameter;
+		return $root."?page=".$page."&oid=".$parameter;
 	case"root":
 		return $root;
 	default:
@@ -72,14 +74,14 @@ if(($_SERVER["SERVER_NAME"]=="localhost")){
 	$root="http://localhost/photox1/";
 	$title="local:".$title;
 }
-else $root="http://photox1.com/";
+else $root="http://".$_SERVER["SERVER_NAME"]."/";
 $beApiRoot='http://54.199.160.200/voo/index.php/dummyApi/';
 $beApiRoot=$root."dummyBackend.php?api=";
 $imgBanner="";
 $hrefBanner="";
 $hyperllink="";
 $description="這是一個「攝影展覧」網站";
-$uid="kinghand.wang"; // 預設的uid，影響 mainPage 顯示的內容
+$uid="kinghand.wang";			// 預設的uid，影響 mainPage 顯示的內容
 $explode=explode("/",$_SERVER["REQUEST_URI"]);
 $page=$explode[1];		if(array_key_exists("page",$_GET))$page=$_GET["page"];
 $object=array();
@@ -87,7 +89,11 @@ $oid="";
 $streamLayout="curation";
 $isPublic=true;
 $category="";			if(array_key_exists("category",$_GET))$category=$_GET["category"];
+$userLogin=null;		if(isset($_SESSION['userLogin']))$userLogin=$_SESSION['userLogin'];
+$uidLogin=""; 			if($userLogin!=null)$uidLogin=$userLogin["uid"];
 switch($page){
+case"upload":
+	break;
 case"object":
 	$oid=$explode[2];
 	if(array_key_exists("oid",$_GET))$oid=$_GET["oid"];
@@ -111,7 +117,7 @@ case"user":
 	switch($page){
 	case"userUploads":
 		$streamLayout="category";
-		$title=$uid."上傳的物件";
+		$title=$user->uid."上傳的照片";
 		break;
 	case"userCuration":
 	default:
@@ -123,9 +129,9 @@ case"user":
 		$description=$object->{'description'};
 		break;
 	}
-	if(isset($_SESSION['uid'])&&$_SESSION['uid']==$uid){
-		$isPublic=false;
-	}
+	// if(isset($_SESSION['uid'])&&$_SESSION['uid']==$uid){
+		// $isPublic=false;
+	// }
 	break;
 case"category":
 	$streamLayout="category";
@@ -150,7 +156,7 @@ default:
 <head>
 	<base_ href="<?php echo getUrl("root",""); ?>" />
 	<title><?php echo $title ?></title>
-	<link href='css/han.min.css' rel='stylesheet'/>
+	<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/han.css">
 	<link href='css/layout.css' rel='stylesheet'/>
 	<LINK REL="SHORTCUT ICON" HREF="favicon.gif" />
 	<meta name="keywords" content="photo,photograph,hub,攝影,Curation">
@@ -162,14 +168,27 @@ default:
 	<meta property="og:image" content="<?php echo $imgBanner ?>" />
 	<meta property="og:description" content="<?php echo $description ?>" />
 	<meta property="og:site_name" content="PHOTOx1" />
+	<script src="script/cookie.min.js"></script>
+	<script src="script/jquery-1.10.1.min.js"></script>
+	<script src="http://malsup.github.com/jquery.form.js"></script>
+	<script src="script/Utility.js"></script>
+	<script src="script/InfinityScroll.js"></script>
+	<script src="script/VooProjectB.js"></script>
 </head>
 <body>
 <!-- ======================================================================== start of plugins -->
 <!-- facebook plugin  -->
 <div id="fb-root"></div>
 <script>
-  
-
+window.fbAsyncInit = function(){
+	  FB.init({
+		appId      : '1429498433953219',
+		status     : true, // check login status
+		cookie     : true, // enable cookies to allow the server to access the session
+		xfbml      : true  // parse XFBML
+	  });
+	 VooProjectB.subscribeFbAuthResponseChange();
+};
   // Load the SDK asynchronously
   (function(d){
    var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
@@ -199,9 +218,14 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 </script>
 <!-- ======================================================================== end of plugins -->
 <div id="paddingSpace"></div>
+<div id="sales" class="center relative" style="display:none">
+	<a id="buynow" href="/" style="display:none"><img src="icon/iconBuyNow.png" alt="buynow" /></a>
+	<a id="applaynow" href="mailto:PHOTOx1@voo.com.tw"><img src="icon/iconApplyNow.png" alt="applaynow" /></a>
+	<a href="#nogo"><img src="" alt="sale" /></a>
+</div>
 <?php
- switch($page): 
- case"object":
+switch($page):
+case"object":
  ?>
 <div id="pageObject">
 	<article>
@@ -222,8 +246,10 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 					<div class="avatarPhotoWrapper column">
 						<img src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg " alt="userPhoto" />
 					</div>
-					<span class="firstName"><?php echo $object->{"user"}->{"firstName"} ?></span>
-					<span class="lastName"><?php echo $object->{"user"}->{"lastName"} ?></span>
+					<span class="username">
+						<span class="firstName"><?php echo $object->{"user"}->{"firstName"} ?></span>
+						<span class="lastName"><?php echo $object->{"user"}->{"lastName"} ?></span>
+					</span>
 				</a>
 				<div class="column description">
 					<span class=""><?php echo $description ?></span>
@@ -232,27 +258,68 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 		</div>
 	</article>
 </div>
+<?php
+	break;
+case"upload":
+?>
+<div class="center">
+	<form id="upload" class="editForm" action="dummyBackend.php?api=upload" method="post">
+		<output class="photo" >
+			<img alt="上傳的圖片" />
+			<div class="loading">
+				<div class="vamWrapper">
+					<span class="vam">loading...</span>
+				</div>
+			</div>
+		</output>
+		<input class="file button" type="file" onchange="VooProjectB.uploadFile();"/>
+		<div>
+			<label>分類</label>
+			<select>
+				<option>請選擇分類</option>
+				<option>美食</option>
+			</select>
+		</div>
+		<div>
+			<label>標題</label>		<input type="text" />
+		</div>
+		<div>
+			<label>詳細說明</label>
+			<textarea placeholder="一些描述"></textarea>
+		</div>
+		<div>
+			<label>延伸連結</label>		<input type="url" />
+		</div>
+		<input class="button" type="button" value="上傳" onclick='location="<?php echo getUrl("user","");?>"' />
+	</form>
+<div>
 <?php 
 	break;
 case"userUploads":
 case"userCuration":
 case"user":
 ?>
-<div id="user" class="center">
-	<div>
-		<img class="column" src="http://graph.facebook.com/<?php echo $uid ?>/picture?width=180&height=180" alt="photoUser" style="height:180px;width:180px;" />
+<div id="user" class="center" style="margin-bottom:10px;">
+	<article>
+		<img class="column" src="http://graph.facebook.com/<?php echo $user->uid ?>/picture?width=180&height=180" alt="photoUser" style="height:180px;width:180px;" />
 		<div class="column description">
+			<h1 class="username">
+				<span class="firstName"><?php echo ($user->firstName) ?></span>
+				<span class="lastName"><?php echo ($user->lastName); ?></span>
+				
+			</h1>
 			<div>
-				<dfn>個人網址</dfn>：<a href="<?php echo $user->{'website'} ?>"><?php echo $user->{'website'} ?></a>
+				<dfn>個人網址</dfn> ： <a href="<?php echo $user->{'website'} ?>"><?php echo $user->{'website'} ?></a>							
 			</div>
+			<dfn>關於</dfn>：
 			<p><?php echo $user->{'introduction'} ?></p>
 		</div>
-		<aside id="userFb" class="column right">
-			<div class="fb-like" data-href="<?php echo getUrl("","");?>" data-width="300" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div>
+		<aside id="userFb" class="column right" style="display: dsf none;">
+			<div class="fb-like-box" data-href="http://www.facebook.com/<?php echo $user->uid;?>" data-height="180" data-colorscheme="light" data-show-faces="true" data-header="false" data-stream="false" data-show-border="true"></div>
 		</aside>
-	</div>
-<?php if(!$isPublic):?>
-	<form>
+	</article>
+<?php if($uidLogin!=""&&$uid==$uidLogin):?>
+	<form class="editForm">
 		<div>
 			<label for="website">個人網址</label>
 			<input name="website" type="url" />
@@ -261,19 +328,22 @@ case"user":
 			<label for="ad">專頁廣告網址</label>
 			<input name="ad" type="url" />
 		</div>
-		<div>
+		<div style="display:none">
 			<label for="ad">分享收藏</label>
 			<input name="ad" type="checkbox" />
 		</div>
-		<input type="submit" />
+		<button class="button" type="button" value="" >送出</button>
+		<a class="button" href="<?php echo getUrl("upload","");?>">上傳照片</a>
 	</form>
 <?php endif;?>
-	<aside>
+	<aside style="display:none;">
 		<h2 style="background:#ddd;height:100px">一些廣告</h2>
 	</aside>
-	<nav>
-		<a class="button" href="<?php echo getUrl("userCuration",$uid);?>">展覽</a>
-		<a class="button" href="<?php echo getUrl("userUploads",$uid);?>">上傳的物件</a>
+</div>
+<div class="center dynamicWidth">
+	<nav class="tabWrapper">
+		<a class="button <?php if($page=="user"||$page=="userCuration")echo 'selected';?>" href="<?php echo getUrl("userCuration",$uid);?>">展覽照片</a>
+		<a class="button <?php if($page=="userUploads")echo 'selected';?>" href="<?php echo getUrl("userUploads",$uid);?>">上傳照片</a>
 	</nav>
 </div>
 <?php 
@@ -295,17 +365,13 @@ case"user":
 <?php else:?>
 		<h1 title="<?php echo $description?>"><?php echo $title ?></h1>
 <?php endif;?>
-		<div id="sales" >
-			<a id="buynow" href="/" style="display:none"><img src="icon/iconBuyNow.png" alt="buynow" /></a>
-			<a id="applaynow" href="mailto:PHOTOx1@voo.com.tw"><img src="icon/iconApplyNow.png" alt="applaynow" /></a>
-		</div>
 	</header>
 </div>
 <div id="pageMain" class="">
-	<div id="mainSection" class="pushDown framesContainer center <?php echo $streamLayout ?>">
+	<div id="mainSection" class="pushDown framesContainer center dynamicWidth <?php echo $streamLayout ?>">
 		<div class="stream">
 			<div id="frame" class="frame">
-				<a class="photo" href="objectPage.html">
+				<a class="photo" href="objectPage.html" target="_blank">
 					<div class="rectify ">
 						<img src="" alt="thumbnail" />
 					</div>
@@ -323,8 +389,10 @@ case"user":
 					<div class="avatarPhotoWrapper column">
 						<img src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg " alt="userPhoto" />
 					</div>
-					<span class="firstName">firstName</span>
-					<span class="lastName">lastName</span>
+					<span class="username">
+						<span class="firstName">firstName</span>
+						<span class="lastName">lastName</span>
+					</span>
 				</a>
 				<hr />
 			</div>
@@ -346,19 +414,22 @@ endswitch;
 <div id="topBar" style="display:d none">
 	<div class="container">
 		<div id="" class="left">
-			<button id="categoryButton" class="button">導覽</button>
+			<button id="categoryButton" class="button">分類</button>
 		</div>
 		<div class="right">
-			<figure class="column afterLogin" style="display:none">
+<?php if($uidLogin!=""):?>
+			<figure class="column afterLogin">
 				<button onclick="VooProjectB.gotoMyPage();" style="padding:0;border:0;">
-					<img id="userPicture" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg" style="height:34px" alt="userPicture" />
+					<img id="userPicture" src="http://graph.facebook.com/<?php echo $userLogin["uid"]; ?>/picture?type=small" style="height:34px" alt="userPicture" />
 				</button>
-				<button id="userSetting" class="column button">使用者名稱</button>
+				<button id="userSetting" class="column button"><?php echo $userLogin["firstName"].$userLogin["lastName"]; ?></button>
 			</figure>
+<?php else:?>
 			<div class="beforeLogin">
-				<button onclick="VooProjectB.login();" class="button" >登入</button>
+				<div class="fb-login-button" data-max-rows="1" data-show-faces="false"></div>
 				<button id="setting" class="button" >設定</button>
 			</div>
+<?php endif;?>
 		</div>
 		<h1 id="siteTitleWrapper" >
 			<a class="header column" id="siteTitle" href="<?php echo getUrl("root","") ?>" title="PHOTOX1"></a>
@@ -381,49 +452,44 @@ endswitch;
 </div>
 <div id="settingSlidedown" class="slideDown">
 	<ol class="background right">
+<?php if($uidLogin!=""):?>
+		<li class="afterLogin"><a href="<?php echo getUrl("upload",""); ?>">上傳新照片</a>
 		<li class="afterLogin"><button onclick="VooProjectB.gotoMyPage();">個人首頁</button>
 		<li class="afterLogin"><button onclick="VooProjectB.logout();">登出</button>
+<?php endif;?>
 		<li><a href="mailto:PHOTOx1@voo.com.tw">報名展出 </a>
 		<li><a href="mailto:PHOTOx1@voo.com.tw">聯絡我們</a>
 		<li><a href="http://www.facebook.com/PHOTOx1">關於我們</a>
 		<li><a >隱私權政策</a>
 	</ol>
 </div>
-<script src="script/cookie.min.js"></script>
-<script src="script/jquery-1.10.1.min.js"></script>
-<script src="script/Utility.js"></script>
-<script src="script/InfinityScroll.js"></script>
-<script src="script/VooProjectB.js"></script>
 <script src="script/UI.js"></script>
 <script>
-window.fbAsyncInit = function(){
-	  FB.init({
-		appId      : '1429498433953219',
-		status     : true, // check login status
-		cookie     : true, // enable cookies to allow the server to access the session
-		xfbml      : true  // parse XFBML
-	  });
-	VooProjectB.subscribeFbAuthResponseChange();
-};
 VooProjectB.isAliasDone="<?php echo $isAliasDone ?>";
 VooProjectB.root="<?php echo $root ?>";
 VooProjectB.beApiRoot="<?php echo $beApiRoot ?>";
 VooProjectB.oid="<?php echo $oid ?>";
 VooProjectB.page="<?php echo $page ?>";
 VooProjectB.streamLayout="<?php echo $streamLayout ?>";
+VooProjectB.uid="<?php echo $uidLogin; ?>";
 <?php 
 switch($page):
 case"object":?>
 VooProjectB.objectPage();
 <?php
 	break;
-default:?>
+case"category":
+case"":
+case"userUploads":
+case"userCuration":
+case"user":
+?>
 VooProjectB.mainPage();
 <?php
+	break;
 endswitch;
 ?>
 VooProjectB.uiAuthStatus();
-console.log("<?php echo $_SESSION['uid'];?>")
 </script>
 </body>
 </html>

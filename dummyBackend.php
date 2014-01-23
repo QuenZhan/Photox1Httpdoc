@@ -239,8 +239,8 @@ $user='
 	"uid":"kinghand.wang"
 	,"photoUrl":"https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg"
 	,"website":"http://www.facebook.com/kinghand.wang"
-	,"firstName":"kinghand"
-	,"lastName":"wang"
+	,"firstName":"小賢"
+	,"lastName":"王"
 	,"introduction":"introduction"
 }
 ';
@@ -308,20 +308,12 @@ $object00='{
 if(array_key_exists("api",$_GET))$api=$_GET["api"];
 switch($api){
 case"setUser":
-	$uid="uid";
+	$uid="";
+	$_SESSION['userLogin']=null;
 	if(array_key_exists("user",$_POST)){
-		// $user=$_POST["user"];
+		$_SESSION['userLogin']=$_POST["user"];
 		$uid=$_POST["user"]["uid"];
-		// switch($_POST["user"]){
-		// case null:
-			// $uid="logout";
-			// break;
-		// default:
-			// $uid=$user->uid;
-			// break;
-		// }
 	}
-	$_SESSION['uid']=$uid;
 	echo '{"eroor":0
 		,"uid":"'.$uid.'"
 		,"psid":"'.session_id().'"
@@ -363,6 +355,13 @@ case"getObjects":
 			]
 			,"end":"end"
 		}';
+	break;
+case"upload":
+	echo '{"url":"http://www.photox1.com/user/cappucat/photo/800/cappucat_001.jpg"
+		,"bah":"bah"
+	}';
+	break;
+case"logout":
 	break;
 default:
 	echo '{"bah":"bah"}';
