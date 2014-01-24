@@ -237,7 +237,7 @@ $oid="";
 $user='
 {
 	"uid":"kinghand.wang"
-	,"photoUrl":"https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc1/c25.0.81.81/s50x50/252231_1002029915278_1941483569_s.jpg"
+	,"photoUrl":"http://graph.facebook.com/kinghand.wang/picture?type=small"
 	,"website":"http://www.facebook.com/kinghand.wang"
 	,"firstName":"小賢"
 	,"lastName":"王"

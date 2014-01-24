@@ -3,6 +3,7 @@ margin:0;
 background:0;
 font-family: "Helvetica Neue", Helvetica, Arial, "微軟正黑體", sans-serif;
 color:#aaa7ea;
+color:#666;
 }
 #settingSlidedown button{
 display:inline;
@@ -505,4 +506,7 @@ background:#fff;
 }
 .tabWrapper .selected{
 border-bottom:solid 1px #fff;
+}
+.group{
+margin:7px 0;
 }
