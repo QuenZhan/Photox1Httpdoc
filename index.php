@@ -48,10 +48,7 @@ function jsonError(){
     }
 }
 function be($apiName,$parameter){
-	global $root;
-	$beApiRoot='http://54.199.160.200/voo/index.php/dummyApi/';
-	$beApiRoot=$root."dummyBackend.php?api=";
-	// $beApiRoot='http://test.talkin.cc/voo/Dummyapi/';
+	global $root,$beApiRoot;
 	$ch = curl_init($beApiRoot.$apiName);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_POST, true);
@@ -61,8 +58,16 @@ function be($apiName,$parameter){
 	return json_decode($result);
 }
 function getRoot(){
-	if(($_SERVER["SERVER_NAME"]=="localhost"))$root="http://localhost/photox1/";
-	else $root="http://".$_SERVER["SERVER_NAME"]."/";
+	$SERVER_NAME=$_SERVER["SERVER_NAME"];
+	switch($SERVER_NAME){
+	case"localhost":
+	case"54.199.160.200":
+		$root="http://".$SERVER_NAME."/photox1/";
+		break;
+	default:
+		$root="http://".$SERVER_NAME."/";
+		break;
+	}
 	return $root;
 }
 function parseUrl($option){
@@ -108,6 +113,8 @@ function curPageURL(){
 //----------------------------------------------- Init. Setting
 $isAliasDone=false;		// 若 Alias 設定已經完成，設之為 true
 $root=getRoot();		// 根 Url
+$beApiRoot=$root."dummyBackend.php?api=";
+$beApiRoot='http://54.199.160.200/voo_stg/index.php/api/';
 //----------------------------------------------- Open Graph Setting
 $title="PHOTOx1 攝影展覽";
 $imgBanner="";
@@ -115,11 +122,12 @@ $hrefBanner="";
 $hyperllink="";
 $description="這是一個「攝影展覧」網站";
 //----------------------------------------------- User Login
-$userLogin=null;		if(isset($_SESSION['userLogin']))$userLogin=$_SESSION['userLogin'];
+$userLogin=null;		if(isset($_SESSION['voofeUserLogin']))$userLogin=$_SESSION['voofeUserLogin'];
 $uidLogin=""; 			if($userLogin!=null)$uidLogin=$userLogin["uid"];
+// var_dump($userLogin);
 //----------------------------------------------- for Layout 
 $uid="";
-$object=array();
+$object=null;
 $streamLayout="curation";
 $page=parseUrl("page");
 switch($page){
@@ -127,6 +135,7 @@ case"upload":
 	break;
 case"object":
 	$result=be("getSingleObject",array("oid"=>parseUrl("oid"),"count"=>true));
+	if(($result->error)!="0")break;
 	$object=$result->{'targetObject'};
 	$title=$object->{'title'};
 	$description=$object->{'description'};
@@ -139,6 +148,10 @@ case"userCuration":
 case"user":
 	$uid=parseUrl("uid");
 	$result=be("getUser",array("uid"=>$uid,"count"=>true));
+	if($result==null||$result->error!=0){
+		$user=null;
+		break;
+	}
 	$user=$result->{'user'};
 	switch($page){
 	case"userUploads":
@@ -148,7 +161,8 @@ case"user":
 	case"userCuration":
 	default:
 		$streamLayout="curation";
-		$result=be("getSingleObject",array("oid"=>0));
+		$result=be("getSingleObject",array("specialOid"=>$uid));
+		if(($result->error)!="0")break;
 		$object=$result->{'targetObject'};
 		$imgBanner=$object->{'photoCuration'}->{"url"};
 		$hrefBanner=$object->{'hyperllink'};
@@ -159,13 +173,23 @@ case"user":
 case"category":
 	$streamLayout="category";
 	$title=parseUrl("category");
-	$result=be("getSingleObject",array("oid"=>0));
+	$result=be("getSingleObject",array("oid"=>$title));
+	if($result->error!="0")break;;
 	$object=$result->{'targetObject'};
 	$description=$object->{'description'};
 	break;
 default:
 	$page="";
-	$result=be("getSingleObject",array("oid"=>0));
+	$result=be("getSingleObject",array("specialOid"=>"main"));
+	if($result==null)break;
+	$isokay=true;
+	switch($result->error){
+	case"wrong oid":
+		$isokay=false;
+		break;
+	default:
+	}
+	if(!$isokay)break;
 	$object=$result->{'targetObject'};
 	$imgBanner=$object->{'photoCuration'}->{"url"};
 	$hrefBanner=$object->{'hyperllink'};
@@ -250,11 +274,13 @@ _atrk_opts = { atrk_acct:"RDKMi1a4ZP0085", domain:"photox1.com",dynamic: true};
 </div>
 <?php
 switch($page):
-case"object":
- ?>
+case"object":?>
 <div id="pageObject">
 	<article>
 		<div class="center frame object">
+<?php if($object==null):?>
+			<p>Ooops ! Bad object id request </p>
+<?php else:?>
 			<a class="photo" href="<?php echo $hyperllink ?>" target="_blank">
 				<img src="<?php echo $imgBanner ?>" alt="<?php echo $title ?>" />
 				<div class="loading">
@@ -280,11 +306,11 @@ case"object":
 					<span class=""><?php echo $description ?></span>
 				</div>
 			</div>
+<?php endif;?>
 		</div>
 	</article>
 </div>
-<?php
-	break;
+<?php break;
 case"upload":
 ?>
 <div class="center">
@@ -299,27 +325,27 @@ case"upload":
 		</output>
 		<div class="group">
 			<label>照片檔案</label>
-			<input class="file " type="file" onchange="VooProjectB.uploadFile();"/>
+			<input name="photoFile" class="file " type="file" onchange="VooProjectB.uploadFile();"/>
 		</div>
 		<div class="group">
 			<label>全站分類</label>
-			<select>
+			<select class="category">
 				<option>請選擇分類</option>
 				<option>美食</option>
 			</select>
 		</div>
 		<div class="group">
-			<label>照片標題</label>		<input type="text" />
+			<label>照片標題</label>		<input class="title" type="text" />
 		</div>
 		<div class="group">
 			<label>詳細說明</label>
-			<textarea placeholder="一些描述"></textarea>
+			<textarea class="description" placeholder="一些描述"></textarea>
 		</div>
 		<div class="group">
-			<label>延伸連結</label>		<input type="url" />
+			<label>延伸連結</label>		<input class="hyperlink" type="url" />
 		</div>
 		<div class="group">
-			<button type="button" class="button" onclick='location="<?php echo getUrl("user","");?>"'>上傳</button>
+			<button type="button" class="button" onclick='VooProjectB.newObject();'>上傳</button>
 			<a class="button" href='<?php echo getUrl("user","");?>"'>取消</a>
 		</div>
 	</form>
@@ -331,6 +357,9 @@ case"userCuration":
 case"user":
 ?>
 <div id="user" class="center" style="margin-bottom:10px;">
+<?php if($user==null):?>
+	<p>Oops , 沒有此使用者</p>
+<?php else:?>
 	<article>
 		<img class="column" src="http://graph.facebook.com/<?php echo $user->uid ?>/picture?width=180&height=180" alt="photoUser" style="height:180px;width:180px;" />
 		<div class="column description">
@@ -345,10 +374,13 @@ case"user":
 			<p><?php echo $user->{'introduction'} ?></p>
 		</div>
 		<aside id="userFb" class="column right" style="display: dsf none;">
+			<!--
 			<div class="fb-like-box" data-href="http://www.facebook.com/<?php echo $user->uid;?>" data-height="180" data-colorscheme="light" data-show-faces="true" data-header="false" data-stream="false" data-show-border="true"></div>
+			-->
 		</aside>
 	</article>
-<?php if($uidLogin!=""&&$uid==$uidLogin):?>
+<?php endif;?>
+<?php if($uidLogin!=""&&$uid==$uidLogin&&$user!=null):?>
 	<form class="editForm">
 		<div>
 			<label for="website">個人網址</label>
@@ -370,12 +402,14 @@ case"user":
 		<h2 style="background:#ddd;height:100px">一些廣告</h2>
 	</aside>
 </div>
+<?php if($user!=null): ?>
 <div class="center dynamicWidth" style="margin-bottom:10px;">
 	<nav class="tabWrapper">
 		<a class="button <?php if($page=="user"||$page=="userCuration")echo 'selected';?>" href="<?php echo getUrl("userCuration",$uid);?>">展覽照片</a>
 		<a class="button <?php if($page=="userUploads")echo 'selected';?>" href="<?php echo getUrl("userUploads",$uid);?>">所有照片</a>
 	</nav>
 </div>
+<?php endif;?>
 <?php 
 	break;
 endswitch;
@@ -430,7 +464,7 @@ case"user":
 	</div>
 </div>
 <footer>
-	<div class="footer dynamicWidth endOfPage">
+	<div class="footer endOfPage">
 		<hr>
 		<div class="endOfPage">
 			END OF PAGE
@@ -441,6 +475,9 @@ case"user":
 	break;
 endswitch;
 ?>
+<!-- 上方 Fixed topbar -->
+<!-- 上方 Fixed topbar -->
+<!-- 上方 Fixed topbar -->
 <div id="topBar" style="display:d none">
 	<div class="container">
 		<div id="" class="left">
@@ -456,7 +493,10 @@ endswitch;
 			</figure>
 <?php else:?>
 			<div class="beforeLogin">
-				<div class="fb-login-button" data-max-rows="1" data-show-faces="false"></div>
+				<button class="button" onclick="VooProjectB.login();">Log in</button>
+				<!--
+					<div class="fb-login-button" data-max-rows="1" data-show-faces="false"></div>
+				-->
 				<button id="setting" class="button" >設定</button>
 			</div>
 <?php endif;?>
@@ -466,20 +506,35 @@ endswitch;
 		</h1>
 	</div>
 </div>
+<?php 
+$result=be("getCategories",array());
+$curationList=array();
+$cateDisplay=array();
+foreach($result->categories as &$value){
+	if($value->id=="900000")$curationList=$value->children;
+	if(!$value->lock)array_push($cateDisplay,$value);
+}
+?>
+<!-- 分類的下拉選單 -->
+<!-- 分類的下拉選單 -->
+<!-- 分類的下拉選單 -->
 <div id="panel" class="slideDown">
 	<div class="background left">
 		<ul class="column">
-			<li><a href="<?php echo getUrl("user","kinghand.wang");?>">賞喵悅目 - 小賢豆豆媽</a></li>
-			<li><a href="<?php echo getUrl("user","nelson0719");?>">那一年 我到過的尼泊爾 - Nelson Wong</a></li>
-			<li><a href="<?php echo getUrl("user","eric.cc.hsu");?>">陽明山秘境 - Eric the Traveler</a></li>
+<?php foreach($curationList as &$value):?>
+			<li><a href="<?php echo getUrl("category",$value->name);?>"><?php echo $value->name; ?></a></li>
+<?php endforeach; ?>
 		</ul>
 		<ul class="column">
-			<li><a href="<?php echo getUrl("category","類別");?>">類別bla</a>
-			<li>類別
-			<li>類別
+<?php foreach($cateDisplay as &$value): ?>
+			<li><a href="<?php echo getUrl("category",$value->name);?>"><?php echo $value->name;?></a>
+<?php endforeach; ?>
 		</ul>
 	</div>
 </div>
+<!-- 右邊選單的下拉選單 -->
+<!-- 右邊選單的下拉選單 -->
+<!-- 右邊選單的下拉選單 -->
 <div id="settingSlidedown" class="slideDown">
 	<ol class="background right">
 <?php if($uidLogin!=""):?>
@@ -493,6 +548,9 @@ endswitch;
 		<li><a >隱私權政策</a>
 	</ol>
 </div>
+<form role="form" id="form" style="display:none" method="post">
+<input name="photoFile" type="file" />
+</form>
 <script src="script/UI.js"></script>
 <script>
 VooProjectB.isAliasDone="<?php echo $isAliasDone ?>";
@@ -500,13 +558,16 @@ VooProjectB.root="<?php echo $root ?>";
 VooProjectB.page="<?php echo $page ?>";
 VooProjectB.streamLayout="<?php echo $streamLayout ?>";
 VooProjectB.uid="<?php echo $uidLogin; ?>";
+VooProjectB.beApiRoot="<?php echo $beApiRoot; ?>";
 <?php 
 switch($page):
 case"object":?>
 VooProjectB.objectPage();
 <?php
 	break;
-case"category":
+case"category":?>
+VooProjectB.cld="<?php echo parseUrl("category"); ?>";
+<?php
 case"":
 case"userUploads":
 case"userCuration":

@@ -1,15 +1,17 @@
 <?php
-function be($apiName,$parameter){
-	global $root;
-	$beApiRoot='http://54.199.160.200/voo/index.php/dummyApi/';
-	$beApiRoot=$root."dummyBackend.php?api=";
-	$beApiRoot='http://test.talkin.cc/voo/Dummyapi/';
-	$ch = curl_init($beApiRoot.$apiName);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameter));
-	$result=curl_exec($ch);
-	curl_close($ch);
-	return json_decode($result);
+session_start();
+include_once "VooProjectBFrontend.php";
+$vbfe=new VooProjectBFrontend();
+$option="";		if(array_key_exists("option",$_POST))$option=$_POST["option"];
+$user=null;		if(array_key_exists("user",$_POST))$user=$_POST["user"];
+switch($option){
+case"login":
+	$_SESSION['voofeUserLogin']=$user;
+	echo" login ";
+	break;
+case"logout":
+	$_SESSION['voofeUserLogin']=null;
+	echo" logout ";
+	break;
 }
 ?>

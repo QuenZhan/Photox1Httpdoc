@@ -1,7 +1,10 @@
 var VooProjectB={first:false
+	,psid:""
 	,streamLayout:""
+	,cld:""
 	,isAliasDone:false
 	,root:""
+	,beApiRoot:""
 	,index:0
 	,indexPage:0
 	,page:""
@@ -10,7 +13,7 @@ var VooProjectB={first:false
 	,jFrameSeed:false
 	,data:[]
 	,be:function(apiName,parameter,reply){
-		$.post("dummyBackend.php?api="+apiName,parameter,reply,"json");
+		$.post(this.beApiRoot+apiName,parameter,reply,"json");
 	}
 	,jImgLoadBuffer:function jImgLoadBuffer(jObj,url){
 		jObj.each(function(){
@@ -146,24 +149,35 @@ var VooProjectB={first:false
 		};
 	}
 	,loadNext:function(){
-		var parameter={
-				page:this.indexPage
+		var parameter={first:false
+				// ,psid:this.psid
+				,page:this.indexPage
+				,categories:[this.cld]
+				// ,uid:this.uid
 			}
 			,jqxhr
 			;
 		this.indexPage+=1;
-		this.be("getObjects",parameter,function(data){
+		$.post(this.beApiRoot+"getObjects"
+			,parameter
+			,function(data){
 			var i;
 			VooProjectB.data=[];
-			for(i in data.objests){
-				VooProjectB.data.push(data.objests[i]);
+			for(i in data.objects){
+				VooProjectB.data.push(data.objects[i]);
 			}
 			VooProjectB.setup();
+		},"json")
+		.fail(function() {
+			$(".framesContainer").append("<p>Oops ! 無法讀取照片</p>");
 		});
+		// this.be("getObjects",parameter,);
 	}
 	,subscribeFbAuthResponseChange:function(){
-		 FB.Event.subscribe('auth.authResponseChange', function(response) {
+		return;
+		 FB.Event.subscribe('auth.authResponseChange', function(response){
 			if (response.status === 'connected') {
+				// alert("bbbb");
 				FB.api(
 					"/me",
 					function (response) {
@@ -183,8 +197,7 @@ var VooProjectB={first:false
 							,emailSync:response.email
 				
 						};
-						VooProjectB.be("setUser",{"user":user},function(data){
-						});
+						// VooProjectB.be("setUser",{"psid":"","user":user,"photoFile":null},function(data){});
 					}
 				);
 			}else {
@@ -195,14 +208,49 @@ var VooProjectB={first:false
 		window.location=this.getUrl("user",this.uid);
 	}
 	,logout:function(){
-		FB.logout(function(){
-			VooProjectB.be("setUser",null,function(){
-				location.reload();
-			});
+		// FB.logout(function(){
+		// });
+		$.post("beProxy.php",{option:"logout"},function(){
+			location.reload();
 		});
 	}
 	,login:function(){
-		FB.login(function(response) {},{scope:'email'});
+		FB.login(function(response) {
+			FB.api(
+				"/me",
+				function (response) {
+					var url="http://graph.facebook.com/"+VooProjectB.uid+"/picture?type=small"
+						,user;
+					if(response&&!response.error){
+						VooProjectB.uid=response.username
+						url="http://graph.facebook.com/"+VooProjectB.uid+"/picture?type=small"
+					}
+					user={
+						uid:VooProjectB.uid
+						,firstName:response.name
+						,lastName:response.last_name
+						,signUpFrom:"fb"
+						,gender:0//response.gender
+						,email:response.email
+						,emailSync:response.email
+					};
+					$.post("beProxy.php",{option:"login",user:user},function(){
+						// location.reload();
+					});
+					// alert(VooProjectB.beApiRoot);
+					$("#form").ajaxSubmit({
+						url:VooProjectB.beApiRoot+"setUser"
+						,data:{user:JSON.stringify(user)}
+						,data:({"user":user})
+						,dataType:'json'
+						,success:function(data){
+							VooProjectB.psid=data.psid;
+						}
+					});
+					// VooProjectB.be("setUser",,);
+				}
+			);
+		},{scope:'email'});
 	}
 	,uploadFile:function(){
 		$('#upload').ajaxSubmit({
@@ -212,7 +260,25 @@ var VooProjectB={first:false
 			,dataType:'json'
 		}); 
 	}
-	,setObject:function(){
-		be
+	,newObject:function(){
+		var jForm=$('#upload');
+		jForm.ajaxSubmit({
+			url:this.beApiRoot+"setObject"
+			,success:function(){
+				alert("good");
+				gotoMyPage();
+			}
+			,dataType:'json'
+			,data:{
+				psid:this.psid
+				,uid:this.uid
+				,object:{
+					categoryID:jForm.find(".category").val()
+					,title:jForm.find(".title").val()
+					,description:jForm.find(".description").val()
+					,hyperlink:jForm.find(".hyperlink").val()
+				}
+			}
+		});
 	}
 }
