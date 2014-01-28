@@ -7,6 +7,7 @@ var VooProjectB={first:false
 	,beApiRoot:""
 	,index:0
 	,indexPage:0
+	,isEnd:false
 	,page:""
 	,uid:"uid"
 	,streams:[]
@@ -149,6 +150,7 @@ var VooProjectB={first:false
 		};
 	}
 	,loadNext:function(){
+		if(VooProjectB.isEnd)return;
 		var parameter={first:false
 				// ,psid:this.psid
 				,page:this.indexPage
@@ -161,13 +163,14 @@ var VooProjectB={first:false
 		$.post(this.beApiRoot+"getObjects"
 			,parameter
 			,function(data){
-			var i;
-			VooProjectB.data=[];
-			for(i in data.objects){
-				VooProjectB.data.push(data.objects[i]);
-			}
-			VooProjectB.setup();
-		},"json")
+				var i;
+				VooProjectB.data=[];
+				for(i in data.objects){
+					VooProjectB.data.push(data.objects[i]);
+				}
+				VooProjectB.setup();
+				if(data.isEnd)VooProjectB.isEnd=true;
+			},"json")
 		.fail(function() {
 			$(".framesContainer").append("<p>Oops ! 無法讀取照片</p>");
 		});
@@ -208,8 +211,6 @@ var VooProjectB={first:false
 		window.location=this.getUrl("user",this.uid);
 	}
 	,logout:function(){
-		// FB.logout(function(){
-		// });
 		$.post("beProxy.php",{option:"logout"},function(){
 			location.reload();
 		});
@@ -218,7 +219,7 @@ var VooProjectB={first:false
 		FB.login(function(response) {
 			FB.api(
 				"/me",
-				function (response) {
+				function (response){
 					var url="http://graph.facebook.com/"+VooProjectB.uid+"/picture?type=small"
 						,user;
 					if(response&&!response.error){
@@ -235,9 +236,8 @@ var VooProjectB={first:false
 						,emailSync:response.email
 					};
 					$.post("beProxy.php",{option:"login",user:user},function(){
-						// location.reload();
+						location.reload();
 					});
-					// alert(VooProjectB.beApiRoot);
 					$("#form").ajaxSubmit({
 						url:VooProjectB.beApiRoot+"setUser"
 						,data:{user:JSON.stringify(user)}
@@ -247,18 +247,32 @@ var VooProjectB={first:false
 							VooProjectB.psid=data.psid;
 						}
 					});
-					// VooProjectB.be("setUser",,);
 				}
 			);
 		},{scope:'email'});
 	}
+	,editUser:function(jForm,data){
+		$.post(this.beApiRoot+"setUser",data)
+		.done(function(){
+			$("#alertEditSuccess").fadeIn();
+			// alert( "second success" );
+		})
+		.fail(function() {
+			$("#alertEditFail").fadeIn();
+		});
+	}
 	,uploadFile:function(){
 		$('#upload').ajaxSubmit({
-			success:function(data){
-				VooProjectB.jImgLoadBuffer($("#upload .photo img"),data.url);
+			url:"beProxy.php?option=upload"
+			,data:{option:"upload"}
+			,success:function(data){
+				// alert(data);
+				var d = new Date();
+				VooProjectB.jImgLoadBuffer($("#upload .photo img"),data+"?"+d.getTime());
 			}
-			,dataType:'json'
-		}); 
+			,dataType:'text'
+		});
+		// $("#upload .photo img").attr(src,"");
 	}
 	,newObject:function(){
 		var jForm=$('#upload');
@@ -266,7 +280,10 @@ var VooProjectB={first:false
 			url:this.beApiRoot+"setObject"
 			,success:function(){
 				alert("good");
-				gotoMyPage();
+				VooProjectB.gotoMyPage();
+			}
+			,error:function(){
+				alert("bah");
 			}
 			,dataType:'json'
 			,data:{

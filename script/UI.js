@@ -12,3 +12,4 @@ $("#setting , #userSetting").click(function(){
 			$(this).hide(0)
 		})
 });
+$("#alertEditSuccess, #alertEditFail").fadeOut(0);

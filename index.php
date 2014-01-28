@@ -1,120 +1,13 @@
 ﻿<?php
+include_once "VooProjectBFrontend.php";
 session_start();
-function getUrl($page,$parameter){
-	global $root,$isAliasDone;
-	switch($page){
-	case"upload":
-		return $root."?page=".$page;
-	case"userUploads":
-	case"userCuration":
-	case"user":
-		if($isAliasDone)return $root."user/".$parameter;
-		return $root."?page=".$page."&uid=".$parameter;
-	case"category":
-		if($isAliasDone)return $root."category/".$parameter;
-		return $root."?page=".$page."&category=".$parameter;
-	case"object":
-		if($isAliasDone)return $root."object/".$parameter;
-		return $root."?page=".$page."&oid=".$parameter;
-	case"root":
-		return $root;
-	default:
-		return curPageURL();
-	}
-}
-function jsonError(){
-	switch (json_last_error()){
-        case JSON_ERROR_NONE:
-            echo ' - No errors';
-        break;
-        case JSON_ERROR_DEPTH:
-            echo ' - Maximum stack depth exceeded';
-        break;
-        case JSON_ERROR_STATE_MISMATCH:
-            echo ' - Underflow or the modes mismatch';
-        break;
-        case JSON_ERROR_CTRL_CHAR:
-            echo ' - Unexpected control character found';
-        break;
-        case JSON_ERROR_SYNTAX:
-            echo ' - Syntax error, malformed JSON';
-        break;
-        case JSON_ERROR_UTF8:
-            echo ' - Malformed UTF-8 characters, possibly incorrectly encoded';
-        break;
-        default:
-            echo ' - Unknown error';
-        break;
-    }
-}
-function be($apiName,$parameter){
-	global $root,$beApiRoot;
-	$ch = curl_init($beApiRoot.$apiName);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameter));
-	$result=curl_exec($ch);
-	curl_close($ch);
-	return json_decode($result);
-}
-function getRoot(){
-	$SERVER_NAME=$_SERVER["SERVER_NAME"];
-	switch($SERVER_NAME){
-	case"localhost":
-	case"54.199.160.200":
-		$root="http://".$SERVER_NAME."/photox1/";
-		break;
-	default:
-		$root="http://".$SERVER_NAME."/";
-		break;
-	}
-	return $root;
-}
-function parseUrl($option){
-	global $isAliasDone;
-	$result="";
-	$explode=explode("/",$_SERVER["REQUEST_URI"]);
-	switch($option){
-	case"page":
-		if(array_key_exists("page",$_GET))$result=$_GET["page"];
-		if($isAliasDone)$result=$explode[1];
-		break;
-	case"uid":
-		if(array_key_exists("uid",$_GET))$result=$_GET["uid"];
-		if($isAliasDone)$result=$explode[2];
-		break;
-	case"oid":
-		if(array_key_exists("oid",$_GET))$result=$_GET["oid"];
-		if($isAliasDone)$result=$explode[2];
-		break;
-	case"category":
-		if(array_key_exists("category",$_GET))$result=$_GET["category"];
-		break;
-	}
-	return $result;
-}
-function getPage(){
-	global $isAliasDone;
-	$page="";
-	return $page;
-}
-function curPageURL(){
-	$pageURL = 'http';
-	$pageURL .= "://";
-	if ($_SERVER["SERVER_PORT"] != "80") {
-		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-	} else {
-		$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-	}
-	return $pageURL;
-}
+$vbfe=new VooProjectBFrontend();
 //----------------------------------------------- Init. Setting
 //----------------------------------------------- Init. Setting
 //----------------------------------------------- Init. Setting
 $isAliasDone=false;		// 若 Alias 設定已經完成，設之為 true
-$root=getRoot();		// 根 Url
-$beApiRoot=$root."dummyBackend.php?api=";
-$beApiRoot='http://54.199.160.200/voo_stg/index.php/api/';
+$root=$vbfe->root;		// 根 Url
+$beApiRoot=$vbfe->beApiRoot;
 //----------------------------------------------- Open Graph Setting
 $title="PHOTOx1 攝影展覽";
 $imgBanner="";
@@ -129,12 +22,12 @@ $uidLogin=""; 			if($userLogin!=null)$uidLogin=$userLogin["uid"];
 $uid="";
 $object=null;
 $streamLayout="curation";
-$page=parseUrl("page");
+$page=$vbfe->parseUrl("page");
 switch($page){
 case"upload":
 	break;
 case"object":
-	$result=be("getSingleObject",array("oid"=>parseUrl("oid"),"count"=>true));
+	$result=$vbfe->be("getSingleObject",array("oid"=>$vbfe->parseUrl("oid"),"count"=>true));
 	if(($result->error)!="0")break;
 	$object=$result->{'targetObject'};
 	$title=$object->{'title'};
@@ -146,8 +39,8 @@ case"object":
 case"userUploads":
 case"userCuration":
 case"user":
-	$uid=parseUrl("uid");
-	$result=be("getUser",array("uid"=>$uid,"count"=>true));
+	$uid=$vbfe->parseUrl("uid");
+	$result=$vbfe->be("getUser",array("uid"=>$uid,"count"=>true));
 	if($result==null||$result->error!=0){
 		$user=null;
 		break;
@@ -161,7 +54,7 @@ case"user":
 	case"userCuration":
 	default:
 		$streamLayout="curation";
-		$result=be("getSingleObject",array("specialOid"=>$uid));
+		$result=$vbfe->be("getSingleObject",array("specialOid"=>$uid));
 		if(($result->error)!="0")break;
 		$object=$result->{'targetObject'};
 		$imgBanner=$object->{'photoCuration'}->{"url"};
@@ -172,15 +65,15 @@ case"user":
 	break;
 case"category":
 	$streamLayout="category";
-	$title=parseUrl("category");
-	$result=be("getSingleObject",array("oid"=>$title));
+	$title=$vbfe->parseUrl("category");
+	$result=$vbfe->be("getSingleObject",array("oid"=>$title));
 	if($result->error!="0")break;;
 	$object=$result->{'targetObject'};
 	$description=$object->{'description'};
 	break;
 default:
 	$page="";
-	$result=be("getSingleObject",array("specialOid"=>"main"));
+	$result=$vbfe->be("getSingleObject",array("specialOid"=>"main"));
 	if($result==null)break;
 	$isokay=true;
 	switch($result->error){
@@ -202,12 +95,13 @@ default:
 <head>
 	<title><?php echo $title ?></title>
 	<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/han.css">
+	<link href='css/bootstrap.min.css' rel='stylesheet'/>
 	<link href='css/layout.css' rel='stylesheet'/>
 	<LINK REL="SHORTCUT ICON" HREF="favicon.gif" />
 	<meta name="keywords" content="photo,photograph,hub,攝影,Curation">
 	<meta name="author" content="voo.com.tw">
 	<meta name="description" content="<?php echo $description ?>">
-	<meta property="og:url" content="<?php echo curPageURL() ?>" />
+	<meta property="og:url" content="<?php echo $vbfe->getUrl("current",""); ?>" />
 	<meta property="og:title" content="<?php echo $title ?>" />
 	<meta property="og:type" content="website" />
 	<meta property="og:image" content="<?php echo $imgBanner ?>" />
@@ -291,9 +185,9 @@ case"object":?>
 			</a>
 			<h1 class="title"><?php echo $title ?></h1>
 			<div class="actions">
-				<div class="fb-like" data-href="<?php echo getUrl("",""); ?>" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>			</div>
+				<div class="fb-like" data-href="<?php echo $vbfe->getUrl("",""); ?>" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>			</div>
 			<div>
-				<a class="userInfo column" href="<?php echo getUrl("user",$object->{"user"}->{"uid"}); ?>"  >
+				<a class="userInfo column" href="<?php echo $vbfe->getUrl("user",$object->{"user"}->{"uid"}); ?>"  >
 					<div class="avatarPhotoWrapper column">
 						<img class="userPhoto" src="<?php echo $object->{"user"}->{"photoUrl"}; ?>" alt="userPhoto" />
 					</div>
@@ -314,8 +208,49 @@ case"object":?>
 case"upload":
 ?>
 <div class="center">
-	<form id="upload" class="editForm" action="dummyBackend.php?api=upload" method="post">
-		<output class="photo" >
+	<form class="form-horizontal" role="form" id="upload" action="dummyBackend.php?api=upload" method="post">
+		
+	  <div class="form-group">
+		<label for="inputEmail3" class="col-sm-2 control-label">照片檔案</label>
+		<div class="col-sm-10">
+		  <input name="photoFile[]" multiple type="file" placeholder="file" onchange="VooProjectB.uploadFile();" value="選擇檔案" />
+		</div>
+	  </div>
+	  <div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">全站分類</label>
+		<div class="col-sm-10">
+		  <select class="category form-control">
+				<option>請選擇分類</option>
+				<option>美食</option>
+			</select>
+		</div>
+	  </div>
+	  
+	  <div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">照片標題</label>
+		<div class="col-sm-10">
+		  <input type="text" class="form-control" id="inputPassword3" placeholder="*必要*">
+		</div>
+	  </div>
+	  <div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">詳細說明</label>
+		<div class="col-sm-10">
+		  <textarea class="form-control" rows="3" placeholder="對於這張照片的描述"></textarea>
+		</div>
+	  </div>
+	  <div class="form-group">
+		<label for="inputPassword3" class="col-sm-2 control-label">延伸連結</label>
+		<div class="col-sm-10">
+		  <input type="url" class="form-control" id="inputPassword3" placeholder="*必要*">
+		</div>
+	  </div>
+	  <div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button type="button" class="btn btn-primary" onclick='VooProjectB.newObject();'>上傳</button>
+			<a class="btn btn-link" href='<?php echo $vbfe->getUrl("user","");?>"'>取消</a>
+		</div>
+	  </div>
+	  <output class="photo" >
 			<img alt="上傳的圖片" />
 			<div class="loading">
 				<div class="vamWrapper">
@@ -323,31 +258,6 @@ case"upload":
 				</div>
 			</div>
 		</output>
-		<div class="group">
-			<label>照片檔案</label>
-			<input name="photoFile" class="file " type="file" onchange="VooProjectB.uploadFile();"/>
-		</div>
-		<div class="group">
-			<label>全站分類</label>
-			<select class="category">
-				<option>請選擇分類</option>
-				<option>美食</option>
-			</select>
-		</div>
-		<div class="group">
-			<label>照片標題</label>		<input class="title" type="text" />
-		</div>
-		<div class="group">
-			<label>詳細說明</label>
-			<textarea class="description" placeholder="一些描述"></textarea>
-		</div>
-		<div class="group">
-			<label>延伸連結</label>		<input class="hyperlink" type="url" />
-		</div>
-		<div class="group">
-			<button type="button" class="button" onclick='VooProjectB.newObject();'>上傳</button>
-			<a class="button" href='<?php echo getUrl("user","");?>"'>取消</a>
-		</div>
 	</form>
 </div>
 <?php 
@@ -381,21 +291,29 @@ case"user":
 	</article>
 <?php endif;?>
 <?php if($uidLogin!=""&&$uid==$uidLogin&&$user!=null):?>
-	<form class="editForm">
-		<div>
-			<label for="website">個人網址</label>
-			<input name="website" type="url" />
+	<form class="editForm form-horizontal" role="form">
+		<output>
+			<aside id="alertEditSuccess" class="alert alert-success">儲存成功！</aside>
+			<aside id="alertEditFail" class="alert alert-danger">儲存失敗！</aside>
+		</output>
+		<div class="form-group">
+			<label for="website" class="col-sm-2 control-label">個人網址</label>
+			<div class="col-sm-10">
+				<input name="website" type="url" class="form-control" />
+			</div>
 		</div>
-		<div>
-			<label for="ad">專頁廣告網址</label>
-			<input name="ad" type="url" />
+		<div class="form-group">
+			<label for="website" class="col-sm-2 control-label">專頁廣告網址</label>
+			<div class="col-sm-10">
+				<input name="website" type="url" class="form-control" />
+			</div>
 		</div>
-		<div style="display:none">
-			<label for="ad">分享收藏</label>
-			<input name="ad" type="checkbox" />
+		<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button class="btn btn-primary" type="button" value="" onclick="VooProjectB.editUser();">儲存</button>
+			<a class="btn btn-link" href="<?php echo $vbfe->getUrl("upload","");?>">上傳新照片</a>
 		</div>
-		<button class="button" type="button" value="" >送出</button>
-		<a class="button" href="<?php echo getUrl("upload","");?>">上傳新照片</a>
+	  </div>
 	</form>
 <?php endif;?>
 	<aside style="display:none;">
@@ -404,10 +322,10 @@ case"user":
 </div>
 <?php if($user!=null): ?>
 <div class="center dynamicWidth" style="margin-bottom:10px;">
-	<nav class="tabWrapper">
-		<a class="button <?php if($page=="user"||$page=="userCuration")echo 'selected';?>" href="<?php echo getUrl("userCuration",$uid);?>">展覽照片</a>
-		<a class="button <?php if($page=="userUploads")echo 'selected';?>" href="<?php echo getUrl("userUploads",$uid);?>">所有照片</a>
-	</nav>
+	<ul class="nav nav-tabs">
+		<li class="<?php if($page=="user"||$page=="userCuration")echo 'active';?>"><a href="<?php echo $vbfe->getUrl("userCuration",$uid);?>">展覽照片</a></li>
+		<li class="<?php if($page=="userUploads")echo 'active';?>"><a href="<?php echo $vbfe->getUrl("userUploads",$uid);?>">所有照片</a></li>
+	</ul>
 </div>
 <?php endif;?>
 <?php 
@@ -478,36 +396,8 @@ endswitch;
 <!-- 上方 Fixed topbar -->
 <!-- 上方 Fixed topbar -->
 <!-- 上方 Fixed topbar -->
-<div id="topBar" style="display:d none">
-	<div class="container">
-		<div id="" class="left">
-			<button id="categoryButton" class="button">分類</button>
-		</div>
-		<div class="right">
-<?php if($uidLogin!=""):?>
-			<figure class="column afterLogin">
-				<button onclick="VooProjectB.gotoMyPage();" style="padding:0;border:0;">
-					<img id="userPicture" src="http://graph.facebook.com/<?php echo $userLogin["uid"]; ?>/picture?type=small" style="height:34px" alt="userPicture" />
-				</button>
-				<button id="userSetting" class="column button"><?php echo $userLogin["firstName"].$userLogin["lastName"]; ?></button>
-			</figure>
-<?php else:?>
-			<div class="beforeLogin">
-				<button class="button" onclick="VooProjectB.login();">Log in</button>
-				<!--
-					<div class="fb-login-button" data-max-rows="1" data-show-faces="false"></div>
-				-->
-				<button id="setting" class="button" >設定</button>
-			</div>
-<?php endif;?>
-		</div>
-		<h1 id="siteTitleWrapper" >
-			<a class="header column" id="siteTitle" href="<?php echo getUrl("root","") ?>" title="PHOTOX1"></a>
-		</h1>
-	</div>
-</div>
 <?php 
-$result=be("getCategories",array());
+$result=$vbfe->be("getCategories",array());
 $curationList=array();
 $cateDisplay=array();
 foreach($result->categories as &$value){
@@ -515,42 +405,68 @@ foreach($result->categories as &$value){
 	if(!$value->lock)array_push($cateDisplay,$value);
 }
 ?>
-<!-- 分類的下拉選單 -->
-<!-- 分類的下拉選單 -->
-<!-- 分類的下拉選單 -->
-<div id="panel" class="slideDown">
-	<div class="background left">
-		<ul class="column">
+<div id="topBar" style="display:d none">
+	<div class="" style="position:relative">
+		<h1 id="siteTitleWrapper" >
+			<a class="header column" id="siteTitle" href="<?php echo $vbfe->getUrl("root","") ?>" title="PHOTOX1"></a>
+		</h1>
+		<!-- Single button -->
+		<div id="categoryDropdown" class="btn-group">
+		  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			分類 <span class="caret"></span>
+		  </button>
+		  <div class="dropdown-menu" role="menu" style="width:400px">
+			<ul class="column">
 <?php foreach($curationList as &$value):?>
-			<li><a href="<?php echo getUrl("category",$value->name);?>"><?php echo $value->name; ?></a></li>
+				<li><a class="" href="<?php echo $vbfe->getUrl("category",$value->name);?>"><?php echo $value->name; ?></a>
+				</li>
 <?php endforeach; ?>
-		</ul>
-		<ul class="column">
+			</ul>
+			<ul class="column">
 <?php foreach($cateDisplay as &$value): ?>
-			<li><a href="<?php echo getUrl("category",$value->name);?>"><?php echo $value->name;?></a>
+				<li><a href="<?php echo $vbfe->getUrl("category",$value->name);?>"><?php echo $value->name;?></a>
 <?php endforeach; ?>
-		</ul>
+			</ul>
+		  </div>
+		</div>
+		<div class="right">
+<?php if($uidLogin!=""):?>
+			<figure class="column afterLogin">
+				<button onclick="VooProjectB.gotoMyPage();" style="padding:0;border:0;">
+					<img id="userPicture" src="http://graph.facebook.com/<?php echo $userLogin["uid"]; ?>/picture?type=small" style="height:34px" alt="userPicture" />
+				</button>
+				<button onclick="VooProjectB.gotoMyPage();" class="btn btn-primary"><?php echo $userLogin["firstName"].$userLogin["lastName"]; ?></button>
+			</figure>
+<?php else:?>
+			<div class="beforeLogin column">
+				<button class="btn btn-primary" onclick="VooProjectB.login();">Log in</button>
+			</div>
+<?php endif;?>
+			<div class="btn-group">
+			  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				設定 <span class="caret"></span>
+			  </button>
+				<ol class="dropdown-menu pull-right" role="menu">
+			<?php if($uidLogin!=""):?>
+					<li class="afterLogin"><a href="<?php echo $vbfe->getUrl("upload",""); ?>">上傳新照片</a>
+					<li class="afterLogin"><a href="#" onclick="VooProjectB.gotoMyPage();">個人首頁</a>
+					<li class="afterLogin"><a href="#" onclick="VooProjectB.logout();">登出</a>
+					<li class="divider"></li>
+			<?php endif;?>
+					<li><a href="mailto:PHOTOx1@voo.com.tw">報名展出 </a>
+					<li><a href="mailto:PHOTOx1@voo.com.tw">聯絡我們</a>
+					<li><a href="http://www.facebook.com/PHOTOx1">關於我們</a>
+					<li><a >隱私權政策</a>
+				</ol>
+			</div>
+		</div>
 	</div>
 </div>
-<!-- 右邊選單的下拉選單 -->
-<!-- 右邊選單的下拉選單 -->
-<!-- 右邊選單的下拉選單 -->
-<div id="settingSlidedown" class="slideDown">
-	<ol class="background right">
-<?php if($uidLogin!=""):?>
-		<li class="afterLogin"><a href="<?php echo getUrl("upload",""); ?>">上傳新照片</a>
-		<li class="afterLogin"><button onclick="VooProjectB.gotoMyPage();">個人首頁</button>
-		<li class="afterLogin"><button onclick="VooProjectB.logout();">登出</button>
-<?php endif;?>
-		<li><a href="mailto:PHOTOx1@voo.com.tw">報名展出 </a>
-		<li><a href="mailto:PHOTOx1@voo.com.tw">聯絡我們</a>
-		<li><a href="http://www.facebook.com/PHOTOx1">關於我們</a>
-		<li><a >隱私權政策</a>
-	</ol>
-</div>
 <form role="form" id="form" style="display:none" method="post">
-<input name="photoFile" type="file" />
+	<input name="photoFile" type="file" />
 </form>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
 <script src="script/UI.js"></script>
 <script>
 VooProjectB.isAliasDone="<?php echo $isAliasDone ?>";
@@ -566,7 +482,7 @@ VooProjectB.objectPage();
 <?php
 	break;
 case"category":?>
-VooProjectB.cld="<?php echo parseUrl("category"); ?>";
+VooProjectB.cld="<?php echo $vbfe->parseUrl("category"); ?>";
 <?php
 case"":
 case"userUploads":
