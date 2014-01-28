@@ -209,7 +209,13 @@ case"upload":
 ?>
 <div class="center">
 	<form class="form-horizontal" role="form" id="upload" action="dummyBackend.php?api=upload" method="post">
-		
+		<div id="forFilesDrop" 
+		ondrop="TrnthDragAndDrop.onDropFile(event)" 
+		ondragover="TrnthDragAndDrop.onDragOver(event);"
+		style="height:200px;border:1px solid #ddd;display:none"
+		>
+			abc
+		</div>
 	  <div class="form-group">
 		<label for="inputEmail3" class="col-sm-2 control-label">照片檔案</label>
 		<div class="col-sm-10">
@@ -217,39 +223,54 @@ case"upload":
 		</div>
 	  </div>
 	  <div class="form-group">
-		<label for="inputPassword3" class="col-sm-2 control-label">全站分類</label>
-		<div class="col-sm-10">
-		  <select class="category form-control">
-				<option>請選擇分類</option>
-				<option>美食</option>
-			</select>
-		</div>
-	  </div>
-	  
-	  <div class="form-group">
-		<label for="inputPassword3" class="col-sm-2 control-label">照片標題</label>
-		<div class="col-sm-10">
-		  <input type="text" class="form-control" id="inputPassword3" placeholder="*必要*">
-		</div>
-	  </div>
-	  <div class="form-group">
-		<label for="inputPassword3" class="col-sm-2 control-label">詳細說明</label>
-		<div class="col-sm-10">
-		  <textarea class="form-control" rows="3" placeholder="對於這張照片的描述"></textarea>
-		</div>
-	  </div>
-	  <div class="form-group">
-		<label for="inputPassword3" class="col-sm-2 control-label">延伸連結</label>
-		<div class="col-sm-10">
-		  <input type="url" class="form-control" id="inputPassword3" placeholder="*必要*">
-		</div>
-	  </div>
-	  <div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
-			<button type="button" class="btn btn-primary" onclick='VooProjectB.newObject();'>上傳</button>
+			<button type="button" class="btn btn-primary">上傳全部</button>
 			<a class="btn btn-link" href='<?php echo $vbfe->getUrl("user","");?>"'>取消</a>
 		</div>
 	  </div>
+	  <ul class="media-list">
+			<li class="media">
+				<a class="pull-left" href="#">
+					<img class="media-object" src="content/bannerFrameKinghand.jpg" alt="..." width="180" />
+				</a>
+				<div class="media-body">
+					  <select class="category form-control">
+							<option>全站分類</option>
+							<option>美食</option>
+						</select>
+						<input type="text" class="form-control" id="inputPassword3" placeholder="照片標題">
+						<textarea class="form-control" rows="3" placeholder="對於這張照片的描述"></textarea>
+						<input type="url" class="form-control" id="inputPassword3" placeholder="延伸連結">
+					  <div class="form-group">
+						<label for="inputPassword3" class="col-sm-2 control-label">全站分類</label>
+						<div class="col-sm-10">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label for="inputPassword3" class="col-sm-2 control-label">照片標題</label>
+						<div class="col-sm-10">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label for="inputPassword3" class="col-sm-2 control-label">詳細說明</label>
+						<div class="col-sm-10">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label for="inputPassword3" class="col-sm-2 control-label">延伸連結</label>
+						<div class="col-sm-10">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="button" class="btn btn-primary" onclick='VooProjectB.newObject();'>上傳</button>
+							<a class="btn btn-link" href='<?php echo $vbfe->getUrl("user","");?>"'>取消</a>
+						</div>
+					  </div>
+					
+				</div>
+			</li>
+		</ul>
 	  <output class="photo" >
 			<img alt="上傳的圖片" />
 			<div class="loading">
@@ -468,6 +489,7 @@ foreach($result->categories as &$value){
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
 <script src="script/UI.js"></script>
+<script src="script/TrnthDragAndDrop.js"></script>
 <script>
 VooProjectB.isAliasDone="<?php echo $isAliasDone ?>";
 VooProjectB.root="<?php echo $root ?>";
