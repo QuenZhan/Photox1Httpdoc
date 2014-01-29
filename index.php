@@ -309,7 +309,10 @@ case"user":
 			<p><?php echo $user->{'introduction'} ?></p>
 		</div>
 		<aside id="userFb" class="column right" style="display: dsf none;">
-			<!--
+			<div>
+			<div class="fb-like" data-href="https://www.facebook.com/PHOTOx1" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+			</div>
+			<div class="fb-facepile" data-app-id="1429498433953219" data-href="https://www.facebook.com/PHOTOx1" data-max-rows="2" data-colorscheme="light" data-size="medium" data-show-count="false"></div>			<!--
 			<div class="fb-like-box" data-href="http://www.facebook.com/<?php echo $user->uid;?>" data-height="180" data-colorscheme="light" data-show-faces="true" data-header="false" data-stream="false" data-show-border="true"></div>
 			-->
 		</aside>
