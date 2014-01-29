@@ -1,7 +1,7 @@
 var VooProjectB={first:false
 	,psid:""
 	,streamLayout:""
-	,cld:""
+	,cid:""
 	,isAliasDone:false
 	,root:""
 	,beApiRoot:""
@@ -10,6 +10,7 @@ var VooProjectB={first:false
 	,isEnd:false
 	,page:""
 	,uid:"uid"
+	,targetUid:"uid"
 	,streams:[]
 	,jFrameSeed:false
 	,data:[]
@@ -154,8 +155,9 @@ var VooProjectB={first:false
 		var parameter={first:false
 				// ,psid:this.psid
 				,page:this.indexPage
-				,categories:[this.cld]
-				// ,uid:this.uid
+				,categories:[this.cid]
+				,uid:this.uid
+				,targetUid:this.targetUid
 			}
 			,jqxhr
 			;
@@ -236,11 +238,11 @@ var VooProjectB={first:false
 						,emailSync:response.email
 					};
 					$.post("beProxy.php",{option:"login",user:user},function(){
-						location.reload();
+						// location.reload();
 					});
 					$("#form").ajaxSubmit({
 						url:VooProjectB.beApiRoot+"setUser"
-						,data:{user:JSON.stringify(user)}
+						// ,data:{user:JSON.stringify(user)}
 						,data:({"user":user})
 						,dataType:'json'
 						,success:function(data){
@@ -251,7 +253,14 @@ var VooProjectB={first:false
 			);
 		},{scope:'email'});
 	}
-	,editUser:function(jForm,data){
+	,editUser:function(){
+		var jForm=$(".editForm"),data;
+		data={psid:this.psid
+			,user:{
+				uid:this.uid
+				,website:jForm.find("#website").val()
+			}
+		}
 		$.post(this.beApiRoot+"setUser",data)
 		.done(function(){
 			$("#alertEditSuccess").fadeIn();
@@ -279,11 +288,11 @@ var VooProjectB={first:false
 		jForm.ajaxSubmit({
 			url:this.beApiRoot+"setObject"
 			,success:function(){
-				alert("good");
+				alert("success");
 				VooProjectB.gotoMyPage();
 			}
 			,error:function(){
-				alert("bah");
+				alert("error");
 			}
 			,dataType:'json'
 			,data:{

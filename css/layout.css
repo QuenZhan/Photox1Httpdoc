@@ -42,10 +42,12 @@ color:#aaa;
 top:0;
 left:0;
 }
+#categoryDropdown{
+/* padding-left:20px; */
+}
 #categoryDropdown ul{
 list-style:none;
-padding-left:10px;
-margin-right:40px;
+padding-left:20px;
 }
 #paddingSpace{
 display:block;
@@ -439,7 +441,7 @@ background:#fff;
 }
 .center{
 display:block;
-width:800px;
+width:911px;
 margin:0 auto;
 padding-left:30px;
 padding-right:30px;
@@ -508,4 +510,7 @@ border-bottom:solid 1px #fff;
 }
 .group{
 margin:7px 0;
+}
+.lastName{
+display:none;
 }

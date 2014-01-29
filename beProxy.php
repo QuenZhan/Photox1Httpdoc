@@ -15,8 +15,11 @@ case"logout":
 	break;
 case"upload":
 	// echo $_FILES['photoFile']['tmp_name'];
-	move_uploaded_file($_FILES['photoFile']['tmp_name'][0],"C:/Users/Test/Dropbox/VOO/Photox1Httpdoc/uploads/tmp.jpg");
-	echo $vbfe->root."uploads/tmp.jpg";
+	if(!file_exists("/uploads"))mkdir("/uploads");
+	// echo move_uploaded_file($_FILES['photoFile']['tmp_name'][0],"/uploads/tmp.jpg");
+	// var_dump($_FILES['photoFile']['tmp_name']);
+	// move_uploaded_file($_FILES['photoFile']['tmp_name'],"/uploads/tmp.jpg");
+	echo "/uploads/tmp.jpg?".rand();
 	break;
 }
 ?>
