@@ -71,7 +71,7 @@ case"user":
 	case"userCuration":
 	default:
 		$streamLayout="curation";
-		$result=$vbfe->be("getSingleObject",array("specialOid"=>$uid));
+		$result=$vbfe->be("getSingleObject",array("oid"=>$uid));
 		if(($result->error)!="0")break;
 		var_dump($result);
 		$object=$result->{'targetObject'};
@@ -122,6 +122,7 @@ default:
 	<link href='css/bootstrap.min.css' rel='stylesheet'/>
 	<link href='css/layout.css' rel='stylesheet'/>
 	<LINK REL="SHORTCUT ICON" HREF="favicon.gif" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
 	<meta name="keywords" content="photo,photograph,hub,攝影,Curation">
 	<meta name="author" content="voo.com.tw">
 	<meta name="description" content="<?php echo $description ?>">
