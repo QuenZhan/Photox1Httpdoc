@@ -22,13 +22,14 @@ class VooProjectBFrontend{
 	function getRoot(){
 		$SERVER_NAME=$_SERVER["SERVER_NAME"];
 		switch($SERVER_NAME){
+		case"www.photox1.com":
+		case"www.ibloghub.com":
+			$root="http://".$SERVER_NAME."/";
+			break;
 		case"localhost":
 		case"54.199.160.200":
-		case"www.ibloghub.com":
-			$root="http://".$SERVER_NAME."/photox1/";
-			break;
 		default:
-			$root="http://".$SERVER_NAME."/";
+			$root="http://".$SERVER_NAME."/photox1/";
 			break;
 		}
 		return $root;
@@ -45,7 +46,7 @@ class VooProjectBFrontend{
 			if($isAliasDone)return $root."user/".$parameter;
 			return $root."?page=".$page."&uid=".$parameter;
 		case"category":
-			if($isAliasDone)return $root."category/".$parameter;
+			if($isAliasDone)return $root."tw/all/".$parameter;
 			return $root."?page=".$page."&category=".$parameter;
 		case"object":
 			if($isAliasDone)return $root."object/".$parameter;
@@ -82,6 +83,7 @@ class VooProjectBFrontend{
 			break;
 		case"category":
 			if(array_key_exists("category",$_GET))$result=$_GET["category"];
+			if($isAliasDone)$result=$explode[3];
 			break;
 		}
 		return $result;

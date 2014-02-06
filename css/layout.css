@@ -122,9 +122,9 @@ background-position: 0px -110px;
 #topBar .left{
 }
 #user .description{
-width:290px;
+/* width:360px;
 margin:0;
-padding:0 10px;
+padding:0 10px; */
 }
 #user .username{
 font-size:inherit;
@@ -441,10 +441,10 @@ background:#fff;
 }
 .center{
 display:block;
-width:911px;
+width:837px;
 margin:0 auto;
-padding-left:30px;
-padding-right:30px;
+padding-left:15px;
+padding-right:15px; 
 }
 .relative{
 position:relative;

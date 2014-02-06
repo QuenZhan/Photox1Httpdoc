@@ -29,8 +29,14 @@ var VooProjectB={first:false
 	,widthRectify:function widthRectify(){
 		var num=Math.floor((window.innerWidth-70)/$(".stream").outerWidth());
 		if(num<1)num=1;
-		if(this.streamLayout=="curation")num=2;
-		$(".dynamicWidth").css("width",num*($(".stream").outerWidth()+7)-7);
+		if(this.streamLayout=="curation"){
+			num=2;
+			$(".dynamicWidth").css("width",851+60);
+		}
+		// else 
+		$(".dynamicWidth").css("width",num*($(".stream").outerWidth()+7)-7+30); // bootstrap
+		// $(".dynamicWidth").css("width",num*($(".stream").outerWidth()+7)-7);
+		
 		$(".stream").remove();
 		this.streamPush(num);
 	}
@@ -39,9 +45,9 @@ var VooProjectB={first:false
 			,jWrapper=$("<div class=''></div>").appendTo($(".framesContainer"));
 		this.streams=[];
 		for(i=0;i<num;i+=1){
-			this.streams.push($("<div class='stream'></div>").appendTo(jWrapper));
+			this.streams.push($("<div class='stream '></div>").appendTo(jWrapper));
 		}
-		this.streams[num-1].addClass("right");
+		this.streams[num-1].addClass("right ");
 	}
 	,streamClear:function(){
 		switch(this.streamLayout){
@@ -55,12 +61,9 @@ var VooProjectB={first:false
 		case"user":
 			if(this.isAliasDone)return this.root+"user/"+parameter;
 			return this.root+"?page="+page+"&uid="+parameter;
-		case"category":
-			if(this.isAliasDone)return this.root+"object/"+parameter;break;
-			return this.root+"?page="+page+"&cate="+parameter;
 		case"object":
-			if(this.isAliasDone)return this.root+"category/"+parameter;
-			return this.root+"?page="+page+"&category="+parameter;
+			if(this.isAliasDone)return this.root+"object/"+parameter;
+			return this.root+"?page="+page+"&oid="+parameter;
 		default:
 			return this.root;
 		}
@@ -71,6 +74,8 @@ var VooProjectB={first:false
 			,frame=this.data[i]
 			,stream
 			,i
+			,photo
+			,jFrame
 			;
 		if(i%4==3)this.streamClear();
 		switch(this.streamLayout){
@@ -84,7 +89,19 @@ var VooProjectB={first:false
 		default:
 			stream=streams[i%streams.length];
 		}
-		var jFrame=this.jFrameSeed.clone();
+		jFrame=this.jFrameSeed.clone()
+		switch(VooProjectB.streamLayout){
+		case"category":		photo=frame.photoCategory;break;
+		default:			photo=frame.photoCuration;break;
+		}
+		// FE 自我保護：在 curation & category 中
+		// 若照片無法取得，直接跳過此 frame
+		switch(this.page){
+		case"":
+		case"category":
+			if(!photo||!photo.url)return;
+		}
+		// 確實 append frame
 		jFrame
 			.appendTo(stream).end()
 			.find(".photo img")
@@ -106,13 +123,25 @@ var VooProjectB={first:false
 			.find("a").attr("href","?page=object&oid="+frame.oid).end()
 			.find(".firstName").text(frame.user.firstName).end()
 			.find(".lastName").text(frame.user.lastName).end()
+			.find(".nickName").text(frame.user.nickName).end()
 			.find(".title").text(frame.title).end()
-			.find("iframe").attr("src",this.fbReplace(this.getUrl("user",frame.user.uid))).end()
+			.find("iframe").attr("src",this.fbReplace(this.getUrl("object",frame.oid))).end()
+			.find(".fbAction")
+				.attr("href",this.fbReplace(this.getUrl("object",frame.oid)))
+				.hover(function(){
+					var $this=$(this)
+						;$iframe=$('<iframe scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>')
+					$iframe.attr("src",$this.attr("href"));
+					$this.parent().append($iframe);
+					$this.remove();
+				})
+				.end()
 			.find(".userInfo").attr("href",this.getUrl("user",frame.user.uid)).end()
-			.find(".userPhoto").attr("src",frame.user.photoUrl).end()
+			.find(".userPhoto").attr("src","http://graph.facebook.com/"+frame.user.uid+"/picture?type=small").end()
 			;
 	}
 	,fbReplace:function(url){
+		// 將 facebook social plugin 的 iframe 網址中指定的 href 替換成指定的網址，並做 html escape 處理。
 		var fbUrl="https://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2F&width&layout=button_count&action=like&show_faces=false&share=true&height=21"
 		return fbUrl.replace("href=http%3A%2F%2Fphotox1.com%2F","href="+encodeURIComponent(url));
 	}
@@ -125,12 +154,6 @@ var VooProjectB={first:false
 	,setup:function(){
 		this.index=0;
 		this.upadate();
-	}
-	,fbAction:function(){
-		$("<iframe></iframe>")
-			.attr("src","http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&width&layout=button_count&action=like&show_faces=false&share=true&height=21")
-			.insertBefore(this)
-		;
 	}
 	,objectPage:function(){
 		InfinityScroll.onEnter=function(direction){};
@@ -151,17 +174,28 @@ var VooProjectB={first:false
 		};
 	}
 	,loadNext:function(){
-		if(VooProjectB.isEnd)return;
+		// if(VooProjectB.isEnd)return;
 		var parameter={first:false
 				// ,psid:this.psid
 				,page:this.indexPage
-				,categories:[this.cid]
+				// ,limit:3
+				,categories:[]
 				,uid:this.uid
-				,targetUid:this.targetUid
+				,targetUid:""
 			}
 			,jqxhr
 			;
-		this.indexPage+=1;
+		switch(this.page){
+		case"":
+		case"user":
+		case"userCuration":
+		case"category":
+			parameter.categories=[this.cid]
+			break;
+		case"userUploads":
+			parameter.targetUid=this.targetUid;
+			break;;
+		}
 		$.post(this.beApiRoot+"getObjects"
 			,parameter
 			,function(data){
@@ -171,10 +205,11 @@ var VooProjectB={first:false
 					VooProjectB.data.push(data.objects[i]);
 				}
 				VooProjectB.setup();
+				VooProjectB.indexPage+=1;
 				if(data.isEnd)VooProjectB.isEnd=true;
 			},"json")
 		.fail(function() {
-			$(".framesContainer").append("<p>Oops ! 無法讀取照片</p>");
+			$(".framesContainer").append("Ooops ! Page NOT found! Error Code (2001) ");
 		});
 		// this.be("getObjects",parameter,);
 	}

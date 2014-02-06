@@ -2,7 +2,9 @@
 session_start();
 include_once "VooProjectBFrontend.php";
 $vbfe=new VooProjectBFrontend();
-$option="";		if(array_key_exists("option",$_POST))$option=$_POST["option"];
+$option="";
+if(array_key_exists("option",$_POST))$option=$_POST["option"];
+if(array_key_exists("option",$_GET))$option=$_GET["option"];
 $user=null;		if(array_key_exists("user",$_POST))$user=$_POST["user"];
 switch($option){
 case"login":
@@ -12,6 +14,10 @@ case"login":
 case"logout":
 	$_SESSION['voofeUserLogin']=null;
 	echo" logout ";
+	break;
+case"clean":
+	$_SESSION['voofeUserLogin']=null;
+	$_SESSION['voofeCategories']=null;
 	break;
 case"upload":
 	// echo $_FILES['photoFile']['tmp_name'];
