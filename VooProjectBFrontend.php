@@ -1,12 +1,16 @@
 <?php
 class VooProjectBFrontend{
-	public $isAliasDone=false;
+	public $isAliasDone=true;
 	public $root="";
 	public $beApiRoot='http://54.199.160.200/voo_stg/index.php/api/';
 	function __construct(){
 		$this->root=$this->getRoot();
-		$this->beApiRoot='http://54.199.160.200/voo_stg/index.php/api/';
-		// $this->beApiRoot='dummyBackend.php?api=';
+		$this->beApiRoot=$this->root.'be/index.php/api/';
+		switch($this->root){
+		case"localhost":
+			$this->beApiRoot='http://www.ibloghub.com/be/index.php/api/';
+			break;
+		}
    }
 	public function be($apiName,$parameter){
 		$root=$this->root;
@@ -22,11 +26,13 @@ class VooProjectBFrontend{
 	function getRoot(){
 		$SERVER_NAME=$_SERVER["SERVER_NAME"];
 		switch($SERVER_NAME){
+		case"photox1.com":
+		case"ibloghub.com":
 		case"www.photox1.com":
 		case"www.ibloghub.com":
+		case"localhost":
 			$root="http://".$SERVER_NAME."/";
 			break;
-		case"localhost":
 		case"54.199.160.200":
 		default:
 			$root="http://".$SERVER_NAME."/photox1/";
@@ -41,6 +47,8 @@ class VooProjectBFrontend{
 		case"upload":
 			return $root."?page=".$page;
 		case"userUploads":
+			if($isAliasDone)return $root."user/".$parameter.'/uploads';
+			return $root."?page=".$page."&uid=".$parameter;
 		case"userCuration":
 		case"user":
 			if($isAliasDone)return $root."user/".$parameter;
@@ -70,20 +78,31 @@ class VooProjectBFrontend{
 		$explode=explode("/",$_SERVER["REQUEST_URI"]);
 		switch($option){
 		case"page":
+			if($isAliasDone){
+				$result=$explode[1];
+				switch($result){
+				case"user":
+					if(count($explode)>3&&$explode[3]=='uploads')$result='userUploads';
+					break;
+				case"tw":
+				case"hk":
+					$result="category";
+					break;
+				}
+			}
 			if(array_key_exists("page",$_GET))$result=$_GET["page"];
-			if($isAliasDone)$result=$explode[1];
 			break;
 		case"uid":
+			if($isAliasDone&&count($explode)>2)$result=$explode[2];
 			if(array_key_exists("uid",$_GET))$result=$_GET["uid"];
-			if($isAliasDone)$result=$explode[2];
 			break;
 		case"oid":
+			if($isAliasDone&&count($explode)>2)$result=$explode[2];
 			if(array_key_exists("oid",$_GET))$result=$_GET["oid"];
-			if($isAliasDone)$result=$explode[2];
 			break;
 		case"category":
+			if($isAliasDone&&count($explode)>3)$result=urldecode($explode[3]);
 			if(array_key_exists("category",$_GET))$result=$_GET["category"];
-			if($isAliasDone)$result=$explode[3];
 			break;
 		}
 		return $result;

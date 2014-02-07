@@ -23,3 +23,9 @@ FE負責人	| JimZheng
 ## 大記事
 
 * 暫時移除 `Login` 按鈕。
+
+## URL 替換規則
+
+使用者 request	| 實際檔案
+---				| ---
+domainName/		| /index.php

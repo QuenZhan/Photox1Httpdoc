@@ -120,7 +120,7 @@ var VooProjectB={first:false
 				})
 				.prop("frame",jFrame)
 				.end()
-			.find("a").attr("href","?page=object&oid="+frame.oid).end()
+			.find("a").attr("href",this.getUrl("object",frame.oid)).end()
 			.find(".firstName").text(frame.user.firstName).end()
 			.find(".lastName").text(frame.user.lastName).end()
 			.find(".nickName").text(frame.user.nickName).end()
@@ -179,6 +179,7 @@ var VooProjectB={first:false
 				// ,psid:this.psid
 				,page:this.indexPage
 				// ,limit:3
+				,sort:1
 				,categories:[]
 				,uid:this.uid
 				,targetUid:""

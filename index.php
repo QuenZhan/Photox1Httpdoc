@@ -1,6 +1,7 @@
 ﻿<?php
 include_once "VooProjectBFrontend.php";
 session_start();
+// var_dump($_SERVER['PATH_INFO']);
 $vbfe=new VooProjectBFrontend();
 //----------------------------------------------- Open Graph Setting
 $title="PHOTOx1 攝影展覽";
@@ -27,6 +28,7 @@ foreach($result->categories as &$value){
 	if(!$value->lock)array_push($cateUnlock,$value);
 }
 //----------------------------------------------- for Layout 
+$root=$vbfe->root;
 $hyperlink="";
 $targetUid="";
 $uid="";
@@ -57,12 +59,12 @@ case"userCuration":
 case"user":
 	$uid=$vbfe->parseUrl("uid");
 	$result=$vbfe->be("getUser",array("uid"=>$uid,"count"=>true));
-	if($result==null||$result->error!=0){
+	if($result==null||$result->error!="0"){
 		$user=null;
 		break;
 	}
+	// var_dump($result);
 	$user=$result->{'user'};
-	// var_dump($user);
 	$targetUid=$user->uid;
 	switch($page){
 	case"userUploads":
@@ -90,7 +92,6 @@ case"user":
 	}
 	break;
 case"category":
-	$cate=$cateDisplay[0];
 	$streamLayout="category";
 	$title=$vbfe->parseUrl("category");
 	$oid="";
@@ -98,11 +99,19 @@ case"category":
 		if($value->name==$title){
 			$cid=$value->id;
 			$oid=$value->oidBanner;
+			$cate=$value;
 		}
 	}
-	
 	if($oid=="")break;
+	// ads 
+	$result=$vbfe->be("getSingleObject",array("oid"=>$cate->oidAds));
+	if(isset($result->targetObject)){
+		$adsSrc=$result->targetObject->photoObject->url;
+		$adsLink=$result->targetObject->hyperlink;
+	}
+	// 本頁資料
 	$result=$vbfe->be("getSingleObject",array("oid"=>$oid));
+	// var_dump($result);
 	if($result->error!="0")break;;
 	$object=$result->{'targetObject'};
 	$description=$object->{'description'};
@@ -142,9 +151,9 @@ default:
 <head>
 	<title><?php echo $title ?></title>
 	<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/han.css">
-	<link href='css/bootstrap.min.css' rel='stylesheet'/>
-	<link href='css/layout.css' rel='stylesheet'/>
-	<LINK REL="SHORTCUT ICON" HREF="favicon.gif" />
+	<link href='<?php echo $root;?>css/bootstrap.min.css' rel='stylesheet'/>
+	<link href='<?php echo $root;?>css/layout.css' rel='stylesheet'/>
+	<LINK REL="SHORTCUT ICON" HREF="<?php echo $root;?>favicon.gif" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
 	<meta name="keywords" content="photo,photograph,hub,攝影,Curation,photo,photography,photograph,photographer,exhibition,expo,curation,攝影展,攝影,展覧">
 	<meta name="author" content="voo.com.tw">
@@ -155,12 +164,12 @@ default:
 	<meta property="og:image" content="<?php echo $imgBanner ?>" />
 	<meta property="og:description" content="<?php echo $description ?>" />
 	<meta property="og:site_name" content="PHOTOx1" />
-	<script src="script/cookie.min.js"></script>
-	<script src="script/jquery-1.10.1.min.js"></script>
+	<script src="<?php echo $root;?>script/cookie.min.js"></script>
+	<script src="<?php echo $root;?>script/jquery-1.10.1.min.js"></script>
 	<script src="http://malsup.github.com/jquery.form.js"></script>
-	<script src="script/Utility.js"></script>
-	<script src="script/InfinityScroll.js"></script>
-	<script src="script/VooProjectB.js"></script>
+	<script src="<?php echo $root;?>script/Utility.js"></script>
+	<script src="<?php echo $root;?>script/InfinityScroll.js"></script>
+	<script src="<?php echo $root;?>script/VooProjectB.js"></script>
 </head>
 <body>
 <!-- ======================================================================== start of plugins -->
@@ -433,7 +442,7 @@ if(($page==""||$page=="category")
 			<div id="frame" class="frame"> <!-- 這裡是 frame 的種子 -->
 				<a class="photo" href="objectPage.html" target="_blank">
 					<div class="rectify ">
-						<img src="" alt="thumbnail" />
+						<img class="img-responsive*" src="" alt="thumbnail" />
 					</div>
 					<div class="loading">
 						<div class="vamWrapper">
@@ -443,7 +452,7 @@ if(($page==""||$page=="category")
 				</a>
 				<h2 class="title">種子標題</h2>
 				<div class="actions">
-					<span class="fbAction" target="" href="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21"><img src="icon/fbIcon.jpg" alt="fbActions" /></span>
+					<span class="fbAction" target="" href="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21"><img src="<?php echo $root;?>icon/fbIcon.jpg" alt="fbActions" /></span>
 					<!--
 					<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphotox1.com%2Fuser%2Feric.cc.hsu%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
 					-->
@@ -552,9 +561,9 @@ case"category":
 	<input name="photoFile" type="file" />
 </form>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="js/bootstrap.min.js"></script>
-<script src="script/UI.js"></script>
-<script src="script/TrnthDragAndDrop.js"></script>
+<script src="<?php echo $root;?>js/bootstrap.min.js"></script>
+<script src="<?php echo $root;?>script/UI.js"></script>
+<script src="<?php echo $root;?>script/TrnthDragAndDrop.js"></script>
 <script>
 VooProjectB.isAliasDone="<?php echo $vbfe->isAliasDone ?>";
 VooProjectB.root="<?php echo $vbfe->root ?>";
