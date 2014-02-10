@@ -82,7 +82,7 @@ var VooProjectB={first:false
 		case"category":
 			stream=streams[0];
 			for(i=0;i<streams.length;i+=1){
-				if(stream.height()<streams[i].height())continue;;
+				if(stream.height()<=streams[i].height())continue;;
 				stream=streams[i];
 			}
 			break;
@@ -137,7 +137,7 @@ var VooProjectB={first:false
 				})
 				.end()
 			.find(".userInfo").attr("href",this.getUrl("user",frame.user.uid)).end()
-			.find(".userPhoto").attr("src","http://graph.facebook.com/"+frame.user.uid+"/picture?type=small").end()
+			.find(".userPhoto").attr("src","http://graph.facebook.com/"+frame.user.uid+"/picture?type=square").end()
 			;
 	}
 	,fbReplace:function(url){
